@@ -1,0 +1,239 @@
+% DiBella CV
+% LaTeX Curriculum Vitae Template
+% 
+% Copyright (C) 2004-2009 Jason Blevins <jrblevin@sdf.lonestar.org>
+% http://jblevins.org/projects/cv-template/
+% 
+% You may use use this document as a template to create your own CV
+% and you may redistribute the source code freely. No attribution is
+% required in any resulting documents. I do ask that you please leave
+% this notice and the above URL in the source code if you choose to
+% redistribute this file.
+
+\documentclass[11pt,letterpaper]{article}
+
+% Essential packages
+% Comment the following lines to use the default Computer Modern font
+% instead of the Palatino font provided by the mathpazo package.
+% Remove the 'osf' bit if you don't like the old style figures.
+\usepackage[scale=0.82]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo} % Palatino font
+\usepackage{xcolor}
+\usepackage{sectsty}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\setlist[itemize,1]{topsep=0pt, partopsep=0pt, parsep=0pt, itemsep=0pt, label=\textbullet}
+\setlist[itemize,2]{topsep=0pt, partopsep=0pt, parsep=0pt, itemsep=0pt, label=\textendash}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+% Color definitions
+\definecolor{accent}{RGB}{70,130,180} % Steel blue
+\definecolor{lightaccent}{RGB}{240,248,255} % Alice blue
+\definecolor{linkcolor}{RGB}{0,102,204} % Medium blue
+
+% Hyperref setup
+\hypersetup{
+    colorlinks = true,
+    urlcolor = linkcolor,
+    linkcolor = linkcolor,
+    citecolor = linkcolor,
+    pdfauthor = {Nicholas DiBella},
+    pdftitle = {Nicholas DiBella: Curriculum Vitae},
+    pdfcreator = {LaTeX}
+}
+
+% Page layout
+\geometry{
+    left=1in,
+    right=1in,
+    top=0.8in,
+    bottom=0.8in,
+    footskip=0.5in
+}
+
+% Section formatting
+\titleformat{\section}{\large\bfseries\scshape\color{accent}}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{12pt}{8pt}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\footnotesize\thepage}
+
+% Remove paragraph indentation
+\setlength{\parindent}{0pt}
+
+% List formatting
+\setlist[itemize,1]{leftmargin=*, topsep=0.2ex, partopsep=0ex, parsep=0.5ex, itemsep=0.5ex, label=\textbullet}
+\setlist[itemize,2]{leftmargin=2em, topsep=0.1ex, partopsep=0ex, parsep=0.3ex, itemsep=0.3ex, label=\textendash}
+
+\begin{document}
+
+% LaTeX Template Header
+% ---
+% See original template comments above.
+
+\begin{center}
+    {\Large\textsc{Nicholas DiBella}}\\[0.2cm]
+\end{center}
+
+\vspace{-0.5cm}
+
+\begin{center}
+\begin{tabular}{r l r l}
+\textbf{Department of Philosophy} & \hfill & \textbf{Email:} & \href{mailto:dibella@cmu.edu}{dibella@cmu.edu} \\
+\href{https://www.cmu.edu/dietrich/philosophy/}{Carnegie Mellon University} & \hfill & \textbf{Website:} & \href{https://nicholasdibella.com}{nicholasdibella.com} \\
+Pittsburgh, PA 15213 & \hfill & \textbf{Project:} & \href{https://www.swaybeta.ai}{swaybeta.ai} \\
+\end{tabular}
+\end{center}
+
+\section*{Areas of Specialization}
+AI and Education, Epistemology, Philosophy of Science
+
+\section*{Employment}
+\begin{itemize}
+    \item Intelligence Community Postdoctoral Research Fellow, Carnegie Mellon University. 2022--Present
+    \item Assistant Professor of Philosophy, Bilkent University. 2018--2022
+\end{itemize}
+
+\section*{Education}
+\begin{itemize}
+    \item Ph.D. in Philosophy, Stanford University. 2018.
+    \item Visiting Ph.D. Student in Philosophy, Australian National University. Summers 2014--2017.
+    \item B.S. in Physics, Minor in Philosophy, Massachusetts Institute of Technology. 2009.
+\end{itemize}
+
+\section*{Publications}
+\begin{itemize}
+    \item 2024. \href{https://read.dukeupress.edu/the-philosophical-review/article-abstract/133/3/223/390918/Cantor-Choice-and-Paradox?redirectedFrom=fulltext}{``Cantor, Choice, and Paradox.''} \emph{The Philosophical Review}, 133(3), 223--263.
+    \item 2022. \href{https://www.cambridge.org/core/journals/philosophy-of-science/article/fair-infinite-lotteries-qualitative-probability-and-regularity/88F15215C3FB30BA3C642C95DFB87797}{``Fair Infinite Lotteries, Qualitative Probability, and Regularity.''} \emph{Philosophy of Science}, 89(4), 824--844.
+    \item 2018. \href{https://link.springer.com/article/10.1007/s11229-016-1261-3}{``The Qualitative Paradox of Non-Conglomerability.''} \emph{Synthese}, 195(3), 1181--1210.
+\end{itemize}
+
+\section*{Selected Presentations}
+\begin{itemize}
+    \item ``Equipping Students to Dialogue Across Difference'' (with Simon Cullen)
+    \begin{itemize}
+        \item \href{https://teachinginhighered.com/podcast/equip-students-to-dialog-across-differences-using-an-ai-guide/}{The Teaching in Higher Ed Podcast} (2025)
+    \end{itemize}
+
+    \item ``Talk More, Fight Less: How AI Can Help Us Communicate More Effectively, Reason More Rigorously, and Learn to Disagree Constructively'' (with Simon Cullen)
+    \begin{itemize}
+        \item \href{https://www.youtube.com/watch?v=yenpEKRVaNY&t=1494s}{Bard Center for The Study of Hate}, Bard College (2025)
+    \end{itemize}
+
+    \item ``How to Disagree Better'' (with Simon Cullen)
+    \begin{itemize}
+        \item \href{https://wondros.com/podcast}{The Wondros Podcast} (2025)
+    \end{itemize}
+
+    \item ``Harnessing AI to Enhance Constructive Disagreement on Campus'' (with Simon Cullen)
+    \begin{itemize}
+        \item \href{https://freeexpression.charlotte.edu}{University of North Carolina, Charlotte} (2025)
+        \item \href{https://heterodoxacademy.org/events/harnessing-ai-to-enhance-constructive-disagreement-on-campus-hxa-members-only/}{Heterodox Academy workshop} (Aug.\ 2024)
+        \item \href{https://www.axim.org/news/ai-education}{Axim Collaborative, AI \& Education Conference} (Oct.\ 2024)
+        \item Bard Center for the Study of Hate workshop (Nov.\ 2024)
+    \end{itemize}
+
+    \item ``Harnessing AI to Improve Analytic Disagreements''
+    \begin{itemize}
+        \item Intelligence Community Tech Week (Sept.\ 2024)
+    \end{itemize}
+
+    \item ``Promoting Constructive Disagreement and Improving Student Reasoning at Scale'' (with Cullen)
+    \begin{itemize}
+        \item \href{https://www.thefire.org/get-involved/events/2024-fire-faculty-network-conference}{Foundation for Individual Rights and Expression} (2024)
+        \item \href{https://www.axim.org/news/ai-education}{Axim Collaborative, AI \& Education} (2024)
+        \item Bard Center for The Study of Hate (2024)
+    \end{itemize}
+
+    \item ``Structured Reasoning Techniques to Improve Intelligence Products and Interagency Communication'' (with Simon Cullen)
+    \begin{itemize}
+        \item Presentations to NSA, IARPA, CIA, and U.S. Senate Intel Staffers (2023)
+    \end{itemize}
+
+    \item ``Visual Strategies to Improve Group Reasoning, Policymaking, and Understanding Across the Aisle'' (with Simon Cullen)
+    \begin{itemize}
+        \item \href{https://bipartisanpolicy.org}{Bipartisan Policy Center} (2023)
+    \end{itemize}
+\end{itemize}
+
+\section*{Grants \& Funding}
+\begin{itemize}
+    \item \href{https://tools-competition.org/25-winners-press-release/}{Learning Agency Tools Competition Growth-Level Prize}, with Simon Cullen. (\$150,000, 2025)
+    \item \href{https://www.avdf.org/}{Arthur Vining Davis Foundations grant} for Sway (AI-scaffolded chat platform), with Simon Cullen. (\$35,000, 2024)
+    \item \href{https://givingpledge.org/pledger?pledgerId=383}{Ben Delo Foundation research grant}, with Simon Cullen. (\$37,500, 2024)
+    \item \href{https://www.library.cmu.edu/about/news/2024-07/ofai}{Omidyar Network/Open Forum for AI research grant}, with Simon Cullen. (\$50,000, 2024)
+    \item \href{http://www.sniderfoundation.org}{Snider Foundation research grant}, with Simon Cullen. (\$50,000, 2025)
+    \item \href{https://orise.orau.gov/icpostdoc/index.html}{Intelligence Community Postdoctoral Research Fellowship Program}, ``Probabilistic Visualization of Complex Arguments to Resolve Analytic Disagreements.'' U.S. Office of the Director of National Intelligence and U.S. Department of Energy: ICPD-2022-08. Advised by Simon Cullen and Steve Rieber. (\$297,000, 2022--2025)
+\end{itemize}
+
+\section*{Awards \& Honors}
+\begin{itemize}
+    \item \href{https://tools-competition.org/25-winners-press-release/}{Tools Competition Winner}, with Simon Cullen, 2025
+    \item Mellon Foundation Dissertation Fellowship, 2017--2018
+    \item Eastern APA Graduate Student Travel Stipend, 2017
+    \item Patrick Suppes Fellowship in Philosophy of Science, 2010--2015
+    \item MIT Class of 1946 Scholarship, 2007--2009
+\end{itemize}
+
+\section*{Teaching Experience}
+\subsection*{Primary Instructor, Bilkent University}
+\begin{itemize}
+    \item Paradox and Infinity (Fall 2019, Fall 2020, Fall 2021)
+    \item Social and Political Philosophy II (Spring 2019, Spring 2020, Fall 2021)
+    \item Social and Political Philosophy I (Fall 2018, Fall 2019, Fall 2020)
+\end{itemize}
+
+\subsection*{Teaching Assistant, Stanford University}
+\begin{itemize}
+    \item Thinking about the Universe (Spring 2018)
+    \item Introduction to Philosophy (Spring 2017)
+    \item Introduction to Moral Philosophy (Winter 2017)
+    \item Metaphysics (Spring 2016)
+    \item Survey of Formal Methods (Fall 2015)
+    \item Existentialism (Spring 2014)
+    \item Philosophy and Literature (Winter 2014)
+    \item Mind, Matter, and Meaning (Fall 2012, Spring 2013)
+    \item Introductory Logic (Fall 2011)
+\end{itemize}
+
+\subsection*{MIT Educational Studies Program, 2007--2009}
+\begin{itemize}
+    \item \textit{The Big Questions} (2008). Published at ocw.mit.edu/high-school/physics/the-big-questions/ with video lectures and notes.
+    \item \textit{Excitatory Topics in Physics} (2007). Published at ocw.mit.edu/high-school/physics/excitatory-topics-in-physics/ with video lectures and notes.
+\end{itemize}
+
+\section*{Service \& Professional Activities}
+\begin{itemize}
+    \item \textbf{Journal Referee:} \textit{Analysis}, \textit{Canadian Journal of Philosophy}, \textit{Ergo}, \textit{Erkenntnis}, \textit{European Journal for Philosophy of Science}, \textit{International Studies in the Philosophy of Science}, \textit{Pacific Philosophical Quarterly}, \textit{Philosophia Mathematica}, \textit{Philosophical Quarterly}, \textit{Philosophy of Science}, and \textit{Synthese}.
+    \item \textbf{Graduate-Student Editor:} \textit{The Dualist}, Stanford's undergraduate philosophy journal, 2013--2016.
+\end{itemize}
+
+\section*{References}
+\begin{tabular}{ll ll}
+\textbf{Ray Briggs} & & \textbf{Kenny Easwaran} \\
+Professor of Philosophy & & Associate Professor of Philosophy \\
+University of Chicago & & University of California, Irvine \\
+rabriggs@uchicago.edu & & k.easwaran@uci.edu \\
+\\
+\textbf{Alan Hájek} & & \textbf{Mark Crimmins} \\
+Professor of Philosophy & & Associate Professor of Philosophy \\
+Australian National University & & Stanford University \\
+hajek.alan@gmail.com & & crimmins@stanford.edu \\
+\end{tabular}
+
+% Footer with last updated date (commented)
+%\begin{center}
+%  \begin{footnotesize}
+%    Last updated: \today \\
+%    \href{\footerlink}{\texttt{\footerlink}}
+%  \end{footnotesize}
+%\end{center}
+
+\end{document}
