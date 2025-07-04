@@ -27,8 +27,17 @@
         </div>
         
         <div class="input-group">
+            <label for="gender">Sex assigned at birth - optional:</label>
+            <select id="gender">
+                <option value="">Not specified (use average)</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
             <label for="bodyWeight">Body weight (lbs) - optional:</label>
-            <input type="number" id="bodyWeight" min="80" max="500" step="1" placeholder="For BAC and calorie calculations">
+            <input type="number" id="bodyWeight" min="80" max="500" step="1" placeholder="For weight gain calculations">
         </div>
         
         <button class="calculate-btn" onclick="calculateImpact()">Calculate Impact</button>
@@ -178,45 +187,79 @@
         <div class="scientific-references">
             <h3>Scientific References</h3>
             <div class="references-content">
-                <div class="reference-section">
-                    <h4>Longevity & Mortality Studies</h4>
-                    <ul>
+                <div class="reference-section collapsible">
+                    <div class="section-header" onclick="toggleSection('longevity-refs')">
+                        <h4>Longevity & Mortality Studies</h4>
+                        <span class="toggle-icon rotated" id="longevity-refs-icon">▶</span>
+                    </div>
+                    <div class="section-content collapsed" id="longevity-refs-content">
+                        <ul>
                         <li>Sharma, A., et al. (2024). "Impact of Alcohol Consumption on Lifespan: a Mendelian randomization study in Europeans." <em>Scientific Reports</em>, 14, 22825. <a href="https://www.nature.com/articles/s41598-024-73333-8" target="_blank">doi:10.1038/s41598-024-73333-8</a></li>
                         <li>Burton, R., et al. (2018). "Risk thresholds for alcohol consumption: combined analysis of individual-participant data for 599,912 current drinkers in 83 prospective studies." <em>The Lancet</em>, 391(10129), 1513-1523. <a href="https://www.thelancet.com/article/S0140-6736(18)30134-X/fulltext" target="_blank">doi:10.1016/S0140-6736(18)30134-X</a></li>
                         <li>Holman, C.D., et al. (2022). "The effects of modest drinking on life expectancy and mortality risks: a population-based cohort study." <em>Scientific Reports</em>, 12, 11427. <a href="https://www.nature.com/articles/s41598-022-11427-x" target="_blank">doi:10.1038/s41598-022-11427-x</a></li>
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
                 
-                <div class="reference-section">
-                    <h4>Liver Health & Enzyme Studies</h4>
-                    <ul>
-                        <li>Sharma, P., et al. (2019). "Clinical presentation of alcoholic liver disease and non-alcoholic fatty liver disease: spectrum and diagnosis." <em>Translational Gastroenterology and Hepatology</em>, 4, 109. <a href="https://tgh.amegroups.org/article/view/5544/html" target="_blank">doi:10.21037/tgh.2019.11.06</a></li>
-                        <li>Pratt, D.S., et al. (1999). "Special Considerations in Interpreting Liver Function Tests." <em>American Family Physician</em>, 59(8), 2223-2230.</li>
+                <div class="reference-section collapsible">
+                    <div class="section-header" onclick="toggleSection('liver-refs')">
+                        <h4>Liver Health & Gender Studies</h4>
+                        <span class="toggle-icon rotated" id="liver-refs-icon">▶</span>
+                    </div>
+                    <div class="section-content collapsed" id="liver-refs-content">
+                        <ul>
+                        <li>Bizzaro, D., et al. (2023). "Sex-specific association between alcohol consumption and liver cirrhosis: An updated systematic review and meta-analysis." <em>Frontiers in Gastroenterology</em>. <a href="https://www.frontiersin.org/journals/gastroenterology/articles/10.3389/fgstr.2022.1005729/full" target="_blank">doi:10.3389/fgstr.2022.1005729</a></li>
+                        <li>Whitfield, K., et al. (2018). "Liver Disease in Women: The Influence of Gender on Epidemiology, Natural History, and Patient Outcomes." <em>PMC</em>. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3992057/" target="_blank">PMC3992057</a></li>
                         <li>Torruellas, C., et al. (2014). "Diagnosis of alcoholic liver disease." <em>World Journal of Gastroenterology</em>, 20(33), 11684-11699. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4155359/" target="_blank">doi:10.3748/wjg.v20.i33.11684</a></li>
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
                 
-                <div class="reference-section">
-                    <h4>Financial & Investment Data</h4>
-                    <ul>
+                <div class="reference-section collapsible">
+                    <div class="section-header" onclick="toggleSection('weight-refs')">
+                        <h4>Alcohol & Weight Gain Research</h4>
+                        <span class="toggle-icon rotated" id="weight-refs-icon">▶</span>
+                    </div>
+                    <div class="section-content collapsed" id="weight-refs-content">
+                        <ul>
+                        <li>Traversy, G., et al. (2015). "Alcohol Consumption and Obesity: An Update." <em>Current Obesity Reports</em>, 4(1), 122-130. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4338356/" target="_blank">PMC4338356</a></li>
+                        <li>Wang, L., et al. (2010). "Alcohol Consumption, Weight Gain, and Risk of Becoming Overweight in Middle-aged and Older Women." <em>JAMA Internal Medicine</em>, 170(5), 453-461. <a href="https://jamanetwork.com/journals/jamainternalmedicine/fullarticle/415737" target="_blank">doi:10.1001/archinternmed.2009.527</a></li>
+                        <li>Bendsen, N.T., et al. (2013). "Is alcohol consumption a risk factor for weight gain and obesity?" <em>Critical Reviews in Clinical Laboratory Sciences</em>, 50(4-5), 91-105. <a href="https://pubmed.ncbi.nlm.nih.gov/16047538/" target="_blank">PMID: 16047538</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="reference-section collapsible">
+                    <div class="section-header" onclick="toggleSection('financial-refs')">
+                        <h4>Financial & Investment Data</h4>
+                        <span class="toggle-icon rotated" id="financial-refs-icon">▶</span>
+                    </div>
+                    <div class="section-content collapsed" id="financial-refs-content">
+                        <ul>
                         <li>Investopedia. (2024). "S&P 500 Average Returns and Historical Performance." <a href="https://www.investopedia.com/ask/answers/042415/what-average-annual-return-sp-500.asp" target="_blank">Retrieved 2024</a></li>
                         <li>NerdWallet. (2024). "The Average Stock Market Return: About 10%." <a href="https://www.nerdwallet.com/article/investing/average-stock-market-return" target="_blank">Retrieved 2024</a></li>
                         <li>SmartAsset. (2024). "What Is the S&P 500 Average Annual Return?" <a href="https://smartasset.com/investing/sp-500-average-annual-return" target="_blank">Retrieved 2024</a></li>
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
                 
-                <div class="reference-section">
-                    <h4>Health Organization Guidelines</h4>
-                    <ul>
+                <div class="reference-section collapsible">
+                    <div class="section-header" onclick="toggleSection('health-refs')">
+                        <h4>Health Organization Guidelines</h4>
+                        <span class="toggle-icon rotated" id="health-refs-icon">▶</span>
+                    </div>
+                    <div class="section-content collapsed" id="health-refs-content">
+                        <ul>
                         <li>World Health Organization. (2023). "No level of alcohol consumption is safe for our health." <a href="https://www.who.int/europe/news/item/04-01-2023-no-level-of-alcohol-consumption-is-safe-for-our-health" target="_blank">WHO Europe</a></li>
                         <li>Mayo Clinic. (2024). "Liver function tests." <a href="https://www.mayoclinic.org/tests-procedures/liver-function-tests/about/pac-20394595" target="_blank">Patient Care & Health Information</a></li>
                         <li>Cleveland Clinic. (2024). "Elevated Liver Enzymes: What Is It, Causes, Prevention & Treatment." <a href="https://my.clevelandclinic.org/health/symptoms/17679-elevated-liver-enzymes" target="_blank">Health Library</a></li>
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
+                <p class="references-note">
+                    <strong>Note:</strong> This calculator synthesizes data from multiple peer-reviewed studies and health organizations. Individual results may vary significantly based on genetic factors, overall health, and lifestyle variables not captured in population studies.
+                </p>
             </div>
-            <p class="references-note">
-                <strong>Note:</strong> This calculator synthesizes data from multiple peer-reviewed studies and health organizations. Individual results may vary significantly based on genetic factors, overall health, and lifestyle variables not captured in population studies.
-            </p>
         </div>
 
         <div class="footer">
