@@ -133,8 +133,9 @@ function calculateBuyingCosts(homePrice, downPayment, interestRate, mortgageTerm
         }
     }
     
-    // Total cost of buying = Down payment + Closing costs + All housing costs - Rental income - Net proceeds - Tax benefits
-    const totalCost = downPayment + totalClosingCosts + totalHousingCosts - totalRentalIncome - netProceeds - totalTaxBenefits;
+    // Total cost of buying = Down payment + Closing costs + All housing costs - Rental income - Tax benefits
+    // Note: We don't subtract net proceeds here to show actual out-of-pocket costs over the period
+    const totalCost = downPayment + totalClosingCosts + totalHousingCosts - totalRentalIncome - totalTaxBenefits;
     
     return {
         totalCost: totalCost,
