@@ -253,24 +253,25 @@ function calculateComparison() {
                                             pmi, additionalUtilities, sellingCosts, marginalTaxRate, inflationRate, monthlyRent, filingStatus, monthlyInvestmentAmount);
     
     // Calculate renting with investment scenario
-    const rentingWithInvestment = rentingCost + buyingResults.downPaymentOpportunityCost;
+    const rentingWithInvestment = rentingCost - buyingResults.downPaymentOpportunityCost;
     
     // Determine which is better (including opportunity cost)
     const savingsWithoutOpportunityCost = rentingCost - buyingResults.totalCost;
-    const savingsWithOpportunityCost = rentingWithInvestment - buyingResults.totalCost - buyingResults.totalMonthlyInvestmentGrowth;
+    const buyingCostWithInvestment = buyingResults.totalCost - buyingResults.totalMonthlyInvestmentGrowth;
+    const savingsWithOpportunityCost = rentingWithInvestment - buyingCostWithInvestment;
     const isBuyingBetter = savingsWithOpportunityCost > 0;
     
     // Generate results HTML with collapsible sections
     const resultsHTML = `
         <div class="cost-comparison">
             <div class="cost-item">
-                <h4>Renting + Investing Down Payment</h4>
+                <h4>Renting + Investment Opportunity</h4>
                 <div class="cost-amount">${formatCurrency(rentingWithInvestment)}</div>
                 <p>Over ${timeframe} years</p>
             </div>
             <div class="cost-item">
-                <h4>Buying + Investment Potential</h4>
-                <div class="cost-amount ${isBuyingBetter ? 'savings' : ''}">${formatCurrency(buyingResults.totalCost + buyingResults.totalMonthlyInvestmentGrowth)}</div>
+                <h4>Buying + Investment Opportunity</h4>
+                <div class="cost-amount ${isBuyingBetter ? 'savings' : ''}">${formatCurrency(buyingCostWithInvestment)}</div>
                 <p>Over ${timeframe} years</p>
             </div>
         </div>
@@ -287,6 +288,8 @@ function calculateComparison() {
             <div class="collapsible-content" id="monthly-costs">
                 <div class="result-item">
                     <p><strong>Monthly Rent:</strong> ${formatCurrency(monthlyRent)}</p>
+                    <p><strong>Monthly Renter's Insurance:</strong> ${formatCurrency(rentersInsurance)}</p>
+                    <p><strong>Total Monthly Renting Cost:</strong> ${formatCurrency(monthlyRent + rentersInsurance)}</p>
                     <p><strong>Monthly Mortgage Payment:</strong> ${formatCurrency(buyingResults.monthlyMortgage)}</p>
                     <p><strong>Monthly Property Tax:</strong> ${formatCurrency(buyingResults.monthlyPropertyTax)}</p>
                     <p><strong>Monthly Home Insurance:</strong> ${formatCurrency(buyingResults.monthlyHomeInsurance)}</p>
@@ -370,8 +373,8 @@ function calculateComparison() {
                     <p>• Buying: ${formatCurrency(buyingResults.totalCost)}</p>
                     <p>• Difference: ${formatCurrency(Math.abs(savingsWithoutOpportunityCost))} ${savingsWithoutOpportunityCost > 0 ? '(buying saves)' : '(renting saves)'}</p>
                     <p><strong>With Opportunity Cost:</strong></p>
-                    <p>• Renting + Investing: ${formatCurrency(rentingWithInvestment)}</p>
-                    <p>• Buying + Investment Potential: ${formatCurrency(buyingResults.totalCost + buyingResults.totalMonthlyInvestmentGrowth)}</p>
+                    <p>• Renting + Investment Opportunity: ${formatCurrency(rentingWithInvestment)}</p>
+                    <p>• Buying + Investment Opportunity: ${formatCurrency(buyingCostWithInvestment)}</p>
                     <p>• Difference: ${formatCurrency(Math.abs(savingsWithOpportunityCost))} ${savingsWithOpportunityCost > 0 ? '(buying saves)' : '(renting + investing saves)'}</p>
                 </div>
             </div>
@@ -586,8 +589,8 @@ function addDetailedBreakdown(rentingCost, buyingResults, timeframe, downPayment
     const buyInitialCosts = downPayment + buyingResults.totalClosingCosts;
     const buyRecurringCosts = buyingResults.totalHousingCosts - buyingResults.totalRentalIncome - buyingResults.totalTaxBenefits;
     
-    const rentTotal = rentInitialCosts + rentRecurringCosts - rentNetProceeds + buyingResults.downPaymentOpportunityCost;
-    const buyTotal = buyInitialCosts + buyRecurringCosts - buyingResults.netProceeds + buyingResults.totalMonthlyInvestmentGrowth;
+    const rentTotal = rentInitialCosts + rentRecurringCosts - rentNetProceeds - buyingResults.downPaymentOpportunityCost;
+    const buyTotal = buyInitialCosts + buyRecurringCosts - buyingResults.netProceeds - buyingResults.totalMonthlyInvestmentGrowth;
     
     const savings = rentTotal - buyTotal;
     const betterOption = savings > 0 ? 'buying' : 'renting';
@@ -628,8 +631,8 @@ function addDetailedBreakdown(rentingCost, buyingResults, timeframe, downPayment
                     </tr>
                     <tr>
                         <td class="category">Investment opportunity <span class="tooltip-icon" data-tooltip="opportunity">?</span></td>
-                        <td class="rent-col">${formatCurrency(buyingResults.downPaymentOpportunityCost)}</td>
-                        <td class="buy-col">${formatCurrency(buyingResults.totalMonthlyInvestmentGrowth)}</td>
+                        <td class="rent-col">-${formatCurrency(buyingResults.downPaymentOpportunityCost).replace('$', '')}</td>
+                        <td class="buy-col">-${formatCurrency(buyingResults.totalMonthlyInvestmentGrowth).replace('$', '')}</td>
                     </tr>
                     <tr class="total-row">
                         <td class="category">Total with opportunity cost</td>
@@ -653,7 +656,7 @@ function addTooltipListeners() {
     const tooltipTexts = {
         initial: "<strong>Initial costs:</strong><br>Renting: Security deposit and broker fees<br>Buying: Down payment and closing costs (loan origination, appraisal, inspection, etc.)",
         recurring: "<strong>Recurring costs:</strong><br>Renting: All rent payments over the timeframe<br>Buying: Mortgage payments, property taxes, insurance, maintenance, PMI, utilities minus rental income and tax benefits",
-        opportunity: "<strong>Investment opportunity:</strong><br>Renting: What the down payment would grow to if invested in the stock market<br>Buying: What monthly savings from lower housing costs would grow to if invested",
+        opportunity: "<strong>Investment opportunity:</strong><br>Renting: Money gained by investing the down payment instead of buying (shown as negative because it reduces total cost)<br>Buying: Money gained by investing monthly savings from lower housing costs",
         proceeds: "<strong>Net proceeds:</strong><br>Renting: Security deposit returned<br>Buying: Money received from selling the home, minus realtor fees and remaining mortgage balance"
     };
     
