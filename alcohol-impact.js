@@ -513,7 +513,11 @@ class AlcoholImpactCalculator {
                     },
                     legend: {
                         display: true,
-                        position: 'top'
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'line'
+                        }
                     }
                 },
                 scales: {
@@ -614,7 +618,11 @@ class AlcoholImpactCalculator {
                     },
                     legend: {
                         display: true,
-                        position: 'top'
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'line'
+                        }
                     }
                 },
                 scales: {
@@ -629,10 +637,6 @@ class AlcoholImpactCalculator {
                         }
                     },
                     y: {
-                        title: {
-                            display: true,
-                            text: 'Extra Money You Could Have ($)'
-                        },
                         beginAtZero: true,
                         ticks: {
                             callback: function(value) {

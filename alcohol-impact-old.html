@@ -7,9 +7,210 @@
     <link rel="stylesheet" href="alcohol-impact-modern.css">
 </head>
 <body>
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e74c3c 0%, #8e44ad 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .input-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        .calculate-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+            margin: 20px 0;
+        }
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+        .results {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 4px solid #e74c3c;
+            display: none;
+        }
+        .results.show {
+            display: block;
+        }
+        .result-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ecf0f1;
+        }
+        .result-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        .result-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .result-value.high-risk {
+            color: #e74c3c;
+        }
+        .result-value.medium-risk {
+            color: #f39c12;
+        }
+        .result-value.low-risk {
+            color: #27ae60;
+        }
+        .disclaimer {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #856404;
+        }
+        .disclaimer strong {
+            color: #8B4513;
+        }
+        .result-section {
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+        }
+        .section-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            transition: background-color 0.2s ease;
+        }
+        .section-header:hover {
+            background: #e9ecef;
+        }
+        .section-header h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+        .toggle-icon {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            transition: transform 0.2s ease;
+        }
+        .section-content {
+            padding: 0 20px 20px 20px;
+            display: block;
+        }
+        .section-content.collapsed {
+            display: none;
+        }
+        .toggle-icon.rotated {
+            transform: rotate(-90deg);
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .consumption-level {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .consumption-level.low {
+            background: #d4edda;
+            color: #155724;
+        }
+        .consumption-level.moderate {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .consumption-level.high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .consumption-level.very-high {
+            background: #f5c6cb;
+            color: #721c24;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .chart-container {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .chart-container canvas {
+            max-height: 300px;
+        }
+    </style>
+</head>
+<body>
     <div class="container">
         <h1>🍷 Alcohol Impact Calculator</h1>
-        <p class="subtitle">Comprehensive analysis of alcohol's impact on your health, finances, and longevity</p>
+        <p class="subtitle">Estimate how alcohol consumption may affect your lifespan</p>
         
         <div class="input-group">
             <label for="drinksPerWeek">Drinks per week:</label>
@@ -75,7 +276,6 @@
                     
                     <div class="result-item">
                         <div class="result-label">Opportunity Cost</div>
-                        <div class="result-description">The extra money you could have if you invested your alcohol spending instead</div>
                         <div class="result-value high-risk" id="opportunityCost">-</div>
                     </div>
                 </div>
@@ -175,50 +375,6 @@
             <strong>Important Disclaimer:</strong> This calculator provides estimates based on scientific research and population studies. Individual health outcomes vary significantly based on genetics, overall health, lifestyle factors, and other variables. This tool is for educational purposes only and should not replace professional medical advice. Always consult with healthcare providers for personalized health guidance.
         </div>
         
-        <div class="scientific-references">
-            <h3>Scientific References</h3>
-            <div class="references-content">
-                <div class="reference-section">
-                    <h4>Longevity & Mortality Studies</h4>
-                    <ul>
-                        <li>Sharma, A., et al. (2024). "Impact of Alcohol Consumption on Lifespan: a Mendelian randomization study in Europeans." <em>Scientific Reports</em>, 14, 22825. <a href="https://www.nature.com/articles/s41598-024-73333-8" target="_blank">doi:10.1038/s41598-024-73333-8</a></li>
-                        <li>Burton, R., et al. (2018). "Risk thresholds for alcohol consumption: combined analysis of individual-participant data for 599,912 current drinkers in 83 prospective studies." <em>The Lancet</em>, 391(10129), 1513-1523. <a href="https://www.thelancet.com/article/S0140-6736(18)30134-X/fulltext" target="_blank">doi:10.1016/S0140-6736(18)30134-X</a></li>
-                        <li>Holman, C.D., et al. (2022). "The effects of modest drinking on life expectancy and mortality risks: a population-based cohort study." <em>Scientific Reports</em>, 12, 11427. <a href="https://www.nature.com/articles/s41598-022-11427-x" target="_blank">doi:10.1038/s41598-022-11427-x</a></li>
-                    </ul>
-                </div>
-                
-                <div class="reference-section">
-                    <h4>Liver Health & Enzyme Studies</h4>
-                    <ul>
-                        <li>Sharma, P., et al. (2019). "Clinical presentation of alcoholic liver disease and non-alcoholic fatty liver disease: spectrum and diagnosis." <em>Translational Gastroenterology and Hepatology</em>, 4, 109. <a href="https://tgh.amegroups.org/article/view/5544/html" target="_blank">doi:10.21037/tgh.2019.11.06</a></li>
-                        <li>Pratt, D.S., et al. (1999). "Special Considerations in Interpreting Liver Function Tests." <em>American Family Physician</em>, 59(8), 2223-2230.</li>
-                        <li>Torruellas, C., et al. (2014). "Diagnosis of alcoholic liver disease." <em>World Journal of Gastroenterology</em>, 20(33), 11684-11699. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4155359/" target="_blank">doi:10.3748/wjg.v20.i33.11684</a></li>
-                    </ul>
-                </div>
-                
-                <div class="reference-section">
-                    <h4>Financial & Investment Data</h4>
-                    <ul>
-                        <li>Investopedia. (2024). "S&P 500 Average Returns and Historical Performance." <a href="https://www.investopedia.com/ask/answers/042415/what-average-annual-return-sp-500.asp" target="_blank">Retrieved 2024</a></li>
-                        <li>NerdWallet. (2024). "The Average Stock Market Return: About 10%." <a href="https://www.nerdwallet.com/article/investing/average-stock-market-return" target="_blank">Retrieved 2024</a></li>
-                        <li>SmartAsset. (2024). "What Is the S&P 500 Average Annual Return?" <a href="https://smartasset.com/investing/sp-500-average-annual-return" target="_blank">Retrieved 2024</a></li>
-                    </ul>
-                </div>
-                
-                <div class="reference-section">
-                    <h4>Health Organization Guidelines</h4>
-                    <ul>
-                        <li>World Health Organization. (2023). "No level of alcohol consumption is safe for our health." <a href="https://www.who.int/europe/news/item/04-01-2023-no-level-of-alcohol-consumption-is-safe-for-our-health" target="_blank">WHO Europe</a></li>
-                        <li>Mayo Clinic. (2024). "Liver function tests." <a href="https://www.mayoclinic.org/tests-procedures/liver-function-tests/about/pac-20394595" target="_blank">Patient Care & Health Information</a></li>
-                        <li>Cleveland Clinic. (2024). "Elevated Liver Enzymes: What Is It, Causes, Prevention & Treatment." <a href="https://my.clevelandclinic.org/health/symptoms/17679-elevated-liver-enzymes" target="_blank">Health Library</a></li>
-                    </ul>
-                </div>
-            </div>
-            <p class="references-note">
-                <strong>Note:</strong> This calculator synthesizes data from multiple peer-reviewed studies and health organizations. Individual results may vary significantly based on genetic factors, overall health, and lifestyle variables not captured in population studies.
-            </p>
-        </div>
-
         <div class="footer">
             <p>Made with 🧠 for data-driven health decisions</p>
         </div>
