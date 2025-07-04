@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alcohol Impact Calculator - Health & Longevity Tool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e74c3c 0%, #8e44ad 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .input-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        .calculate-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+            margin: 20px 0;
+        }
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+        .results {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 4px solid #e74c3c;
+            display: none;
+        }
+        .results.show {
+            display: block;
+        }
+        .result-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ecf0f1;
+        }
+        .result-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        .result-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .result-value.high-risk {
+            color: #e74c3c;
+        }
+        .result-value.medium-risk {
+            color: #f39c12;
+        }
+        .result-value.low-risk {
+            color: #27ae60;
+        }
+        .disclaimer {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #856404;
+        }
+        .disclaimer strong {
+            color: #8B4513;
+        }
+        .result-section {
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+        }
+        .section-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            transition: background-color 0.2s ease;
+        }
+        .section-header:hover {
+            background: #e9ecef;
+        }
+        .section-header h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+        .toggle-icon {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            transition: transform 0.2s ease;
+        }
+        .section-content {
+            padding: 0 20px 20px 20px;
+            display: block;
+        }
+        .section-content.collapsed {
+            display: none;
+        }
+        .toggle-icon.rotated {
+            transform: rotate(-90deg);
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .consumption-level {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .consumption-level.low {
+            background: #d4edda;
+            color: #155724;
+        }
+        .consumption-level.moderate {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .consumption-level.high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .consumption-level.very-high {
+            background: #f5c6cb;
+            color: #721c24;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍷 Alcohol Impact Calculator</h1>
+        <p class="subtitle">Estimate how alcohol consumption may affect your lifespan</p>
+        
+        <div class="input-group">
+            <label for="drinksPerWeek">Drinks per week:</label>
+            <input type="number" id="drinksPerWeek" min="0" max="100" step="0.5" placeholder="Enter number of drinks">
+        </div>
+        
+        <div class="input-group">
+            <label for="yearsOfDrinking">Years drinking at this rate:</label>
+            <input type="number" id="yearsOfDrinking" min="0" max="80" step="1" placeholder="Enter number of years">
+        </div>
+        
+        <div class="input-group">
+            <label for="costPerDrink">Average cost per drink ($) - optional:</label>
+            <input type="number" id="costPerDrink" min="0" max="50" step="0.25" placeholder="e.g., 8.50 (leave blank to skip financial analysis)">
+        </div>
+        
+        <div class="input-group">
+            <label for="bodyWeight">Body weight (lbs) - optional:</label>
+            <input type="number" id="bodyWeight" min="80" max="500" step="1" placeholder="For BAC and calorie calculations">
+        </div>
+        
+        <button class="calculate-btn" onclick="calculateImpact()">Calculate Impact</button>
+        
+        <div class="results" id="results">
+            <div class="result-section collapsible">
+                <div class="section-header" onclick="toggleSection('longevity')">
+                    <h3>📊 Longevity Impact</h3>
+                    <span class="toggle-icon" id="longevity-icon">▼</span>
+                </div>
+                <div class="section-content" id="longevity-content">
+                    <div class="result-item">
+                        <div class="result-label">Estimated Years of Life Lost</div>
+                        <div class="result-value" id="yearsLost">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Health Risk Category</div>
+                        <div class="result-value" id="riskCategory">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Consumption Level</div>
+                        <div class="consumption-level" id="consumptionLevel">-</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section collapsible" id="financial-section">
+                <div class="section-header" onclick="toggleSection('financial')">
+                    <h3>💰 Financial Impact</h3>
+                    <span class="toggle-icon" id="financial-icon">▼</span>
+                </div>
+                <div class="section-content" id="financial-content">
+                    <div class="result-item">
+                        <div class="result-label">Total Money Spent</div>
+                        <div class="result-value" id="totalCost">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">If Invested Instead (6% return)</div>
+                        <div class="result-value" id="investmentValue">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Opportunity Cost</div>
+                        <div class="result-value high-risk" id="opportunityCost">-</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section collapsible">
+                <div class="section-header" onclick="toggleSection('health')">
+                    <h3>⚖️ Health Metrics</h3>
+                    <span class="toggle-icon" id="health-icon">▼</span>
+                </div>
+                <div class="section-content" id="health-content">
+                    <div class="result-item">
+                        <div class="result-label">Total Calories Consumed</div>
+                        <div class="result-value" id="totalCalories">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Potential Weight Gain</div>
+                        <div class="result-value" id="weightGain">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Peer Comparison</div>
+                        <div class="result-value" id="peerComparison">-</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section collapsible">
+                <div class="section-header" onclick="toggleSection('liver')">
+                    <h3>🫀 Liver Health</h3>
+                    <span class="toggle-icon" id="liver-icon">▼</span>
+                </div>
+                <div class="section-content" id="liver-content">
+                    <div class="result-item">
+                        <div class="result-label">Overall Liver Risk</div>
+                        <div class="result-value" id="liverRisk">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Expected Liver Enzymes (AST/ALT)</div>
+                        <div class="result-value" id="liverEnzymes">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Fatty Liver Stage & Cirrhosis Risk</div>
+                        <div class="result-value" id="fattyLiver">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Recovery Timeline</div>
+                        <div class="result-value" id="liverRecovery">-</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section collapsible">
+                <div class="section-header" onclick="toggleSection('recovery')">
+                    <h3>🔄 Recovery Benefits</h3>
+                    <span class="toggle-icon" id="recovery-icon">▼</span>
+                </div>
+                <div class="section-content" id="recovery-content">
+                    <div class="result-item">
+                        <div class="result-label">Years Gained if Stopped Today</div>
+                        <div class="result-value low-risk" id="recoveryBenefit">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Annual Savings if Stopped</div>
+                        <div class="result-value low-risk" id="annualSavings">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Risk Comparison</div>
+                        <div class="result-value" id="riskComparison">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <strong>Important Disclaimer:</strong> This calculator provides estimates based on scientific research and population studies. Individual health outcomes vary significantly based on genetics, overall health, lifestyle factors, and other variables. This tool is for educational purposes only and should not replace professional medical advice. Always consult with healthcare providers for personalized health guidance.
+        </div>
+        
+        <div class="footer">
+            <p>Made with 🧠 for data-driven health decisions</p>
+        </div>
+    </div>
+
+    <script src="alcohol-impact.js"></script>
+</body>
+</html>
