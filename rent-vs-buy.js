@@ -179,7 +179,7 @@ function calculateComparison() {
     const savingsWithOpportunityCost = rentingWithInvestment - buyingResults.totalCost - buyingResults.totalMonthlyInvestmentGrowth;
     const isBuyingBetter = savingsWithOpportunityCost > 0;
     
-    // Generate results HTML
+    // Generate results HTML with collapsible sections
     const resultsHTML = `
         <div class="cost-comparison">
             <div class="cost-item">
@@ -199,52 +199,82 @@ function calculateComparison() {
             <p><strong>You ${isBuyingBetter ? 'save' : 'spend'} ${formatCurrency(Math.abs(savingsWithOpportunityCost))} by ${isBuyingBetter ? 'buying' : 'renting + investing'}</strong></p>
         </div>
         
-        <div class="result-item">
-            <h3>Monthly Housing Costs</h3>
-            <p><strong>Monthly Rent:</strong> ${formatCurrency(monthlyRent)}</p>
-            <p><strong>Monthly Mortgage Payment:</strong> ${formatCurrency(buyingResults.monthlyMortgage)}</p>
-            <p><strong>Monthly Property Tax:</strong> ${formatCurrency(buyingResults.monthlyPropertyTax)}</p>
-            <p><strong>Monthly Home Insurance:</strong> ${formatCurrency(buyingResults.monthlyHomeInsurance)}</p>
-            <p><strong>Monthly HOA Fees:</strong> ${formatCurrency(buyingResults.monthlyHoaFees)}</p>
-            <p><strong>Monthly Maintenance & Repairs:</strong> ${formatCurrency(buyingResults.monthlyMaintenance)}</p>
-            <p><strong>Total Monthly Housing Cost:</strong> ${formatCurrency(buyingResults.totalMonthlyHousingCost)}</p>
-            <p><strong>Monthly Rental Income:</strong> ${formatCurrency(buyingResults.monthlyRentalIncome)}</p>
-            <p><strong>Net Monthly Housing Cost (Buying):</strong> ${formatCurrency(buyingResults.netMonthlyHousingCost)}</p>
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('monthly-costs')">
+                <h3>Monthly Housing Costs <span class="expand-icon">▼</span></h3>
+            </div>
+            <div class="collapsible-content" id="monthly-costs">
+                <div class="result-item">
+                    <p><strong>Monthly Rent:</strong> ${formatCurrency(monthlyRent)}</p>
+                    <p><strong>Monthly Mortgage Payment:</strong> ${formatCurrency(buyingResults.monthlyMortgage)}</p>
+                    <p><strong>Monthly Property Tax:</strong> ${formatCurrency(buyingResults.monthlyPropertyTax)}</p>
+                    <p><strong>Monthly Home Insurance:</strong> ${formatCurrency(buyingResults.monthlyHomeInsurance)}</p>
+                    <p><strong>Monthly HOA Fees:</strong> ${formatCurrency(buyingResults.monthlyHoaFees)}</p>
+                    <p><strong>Monthly Maintenance & Repairs:</strong> ${formatCurrency(buyingResults.monthlyMaintenance)}</p>
+                    <p><strong>Total Monthly Housing Cost:</strong> ${formatCurrency(buyingResults.totalMonthlyHousingCost)}</p>
+                    <p><strong>Monthly Rental Income:</strong> ${formatCurrency(buyingResults.monthlyRentalIncome)}</p>
+                    <p><strong>Net Monthly Housing Cost (Buying):</strong> ${formatCurrency(buyingResults.netMonthlyHousingCost)}</p>
+                </div>
+            </div>
         </div>
         
-        <div class="result-item">
-            <h3>Home Value & Equity</h3>
-            <p><strong>Initial Home Value:</strong> ${formatCurrency(homePrice)}</p>
-            <p><strong>Home Value After ${timeframe} Years:</strong> ${formatCurrency(buyingResults.futureHomeValue)}</p>
-            <p><strong>Net Proceeds from Sale:</strong> ${formatCurrency(buyingResults.netProceeds)}</p>
-            <p><strong>Selling Costs (6% realtor fee):</strong> ${formatCurrency(buyingResults.sellingCosts)}</p>
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('home-value')">
+                <h3>Home Value & Equity <span class="expand-icon">▼</span></h3>
+            </div>
+            <div class="collapsible-content" id="home-value">
+                <div class="result-item">
+                    <p><strong>Initial Home Value:</strong> ${formatCurrency(homePrice)}</p>
+                    <p><strong>Home Value After ${timeframe} Years:</strong> ${formatCurrency(buyingResults.futureHomeValue)}</p>
+                    <p><strong>Net Proceeds from Sale:</strong> ${formatCurrency(buyingResults.netProceeds)}</p>
+                    <p><strong>Selling Costs (6% realtor fee):</strong> ${formatCurrency(buyingResults.sellingCosts)}</p>
+                </div>
+            </div>
         </div>
         
-        <div class="result-item">
-            <h3>Income from House Hacking</h3>
-            <p><strong>Monthly Rental Income:</strong> ${formatCurrency(buyingResults.monthlyRentalIncome)}</p>
-            <p><strong>Total Rental Income Over ${timeframe} Years:</strong> ${formatCurrency(buyingResults.totalRentalIncome)}</p>
-            <p><strong>Impact on Monthly Housing Cost:</strong> Reduces by ${formatCurrency(buyingResults.monthlyRentalIncome)}/month</p>
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('house-hacking')">
+                <h3>Income from House Hacking <span class="expand-icon">▼</span></h3>
+            </div>
+            <div class="collapsible-content" id="house-hacking">
+                <div class="result-item">
+                    <p><strong>Monthly Rental Income:</strong> ${formatCurrency(buyingResults.monthlyRentalIncome)}</p>
+                    <p><strong>Total Rental Income Over ${timeframe} Years:</strong> ${formatCurrency(buyingResults.totalRentalIncome)}</p>
+                    <p><strong>Impact on Monthly Housing Cost:</strong> Reduces by ${formatCurrency(buyingResults.monthlyRentalIncome)}/month</p>
+                </div>
+            </div>
         </div>
         
-        <div class="result-item">
-            <h3>Opportunity Cost Analysis</h3>
-            <p><strong>Down Payment:</strong> ${formatCurrency(downPayment)}</p>
-            <p><strong>If Down Payment Was Invested:</strong> ${formatCurrency(buyingResults.downPaymentOpportunityCost)}</p>
-            <p><strong>Monthly Investment Potential:</strong> ${formatCurrency(buyingResults.monthlyInvestmentPotential)}</p>
-            <p><strong>Growth from Monthly Investments:</strong> ${formatCurrency(buyingResults.totalMonthlyInvestmentGrowth)}</p>
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('opportunity-cost')">
+                <h3>Opportunity Cost Analysis <span class="expand-icon">▼</span></h3>
+            </div>
+            <div class="collapsible-content" id="opportunity-cost">
+                <div class="result-item">
+                    <p><strong>Down Payment:</strong> ${formatCurrency(downPayment)}</p>
+                    <p><strong>If Down Payment Was Invested:</strong> ${formatCurrency(buyingResults.downPaymentOpportunityCost)}</p>
+                    <p><strong>Monthly Investment Potential:</strong> ${formatCurrency(buyingResults.monthlyInvestmentPotential)}</p>
+                    <p><strong>Growth from Monthly Investments:</strong> ${formatCurrency(buyingResults.totalMonthlyInvestmentGrowth)}</p>
+                </div>
+            </div>
         </div>
         
-        <div class="result-item">
-            <h3>Summary</h3>
-            <p><strong>Simple Comparison (no opportunity cost):</strong></p>
-            <p>• Renting: ${formatCurrency(rentingCost)}</p>
-            <p>• Buying: ${formatCurrency(buyingResults.totalCost)}</p>
-            <p>• Difference: ${formatCurrency(Math.abs(savingsWithoutOpportunityCost))} ${savingsWithoutOpportunityCost > 0 ? '(buying saves)' : '(renting saves)'}</p>
-            <p><strong>With Opportunity Cost:</strong></p>
-            <p>• Renting + Investing: ${formatCurrency(rentingWithInvestment)}</p>
-            <p>• Buying + Investment Potential: ${formatCurrency(buyingResults.totalCost + buyingResults.totalMonthlyInvestmentGrowth)}</p>
-            <p>• Difference: ${formatCurrency(Math.abs(savingsWithOpportunityCost))} ${savingsWithOpportunityCost > 0 ? '(buying saves)' : '(renting + investing saves)'}</p>
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('summary')">
+                <h3>Detailed Summary <span class="expand-icon">▼</span></h3>
+            </div>
+            <div class="collapsible-content" id="summary">
+                <div class="result-item">
+                    <p><strong>Simple Comparison (no opportunity cost):</strong></p>
+                    <p>• Renting: ${formatCurrency(rentingCost)}</p>
+                    <p>• Buying: ${formatCurrency(buyingResults.totalCost)}</p>
+                    <p>• Difference: ${formatCurrency(Math.abs(savingsWithoutOpportunityCost))} ${savingsWithoutOpportunityCost > 0 ? '(buying saves)' : '(renting saves)'}</p>
+                    <p><strong>With Opportunity Cost:</strong></p>
+                    <p>• Renting + Investing: ${formatCurrency(rentingWithInvestment)}</p>
+                    <p>• Buying + Investment Potential: ${formatCurrency(buyingResults.totalCost + buyingResults.totalMonthlyInvestmentGrowth)}</p>
+                    <p>• Difference: ${formatCurrency(Math.abs(savingsWithOpportunityCost))} ${savingsWithOpportunityCost > 0 ? '(buying saves)' : '(renting + investing saves)'}</p>
+                </div>
+            </div>
         </div>
     `;
     
@@ -581,6 +611,19 @@ function addTooltipListeners() {
             activeTooltip = null;
         }
     });
+}
+
+function toggleSection(sectionId) {
+    const content = document.getElementById(sectionId);
+    const header = content.previousElementSibling;
+    
+    if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        header.classList.remove('expanded');
+    } else {
+        content.classList.add('expanded');
+        header.classList.add('expanded');
+    }
 }
 
 // Add event listeners for real-time calculation

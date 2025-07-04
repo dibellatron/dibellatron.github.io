@@ -303,6 +303,60 @@ small {
     display: block;
 }
 
+.collapsible-section {
+    margin-bottom: 15px;
+}
+
+.collapsible-header {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: 1px solid #e9ecef;
+}
+
+.collapsible-header:hover {
+    background: #e9ecef;
+}
+
+.collapsible-header h3 {
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #2c3e50;
+    font-size: 1.2em;
+}
+
+.expand-icon {
+    font-size: 0.8em;
+    color: #6c757d;
+    transition: transform 0.2s ease;
+}
+
+.collapsible-header.expanded .expand-icon {
+    transform: rotate(180deg);
+}
+
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.collapsible-content.expanded {
+    max-height: 500px;
+    padding-top: 10px;
+}
+
+.collapsible-content .result-item {
+    margin-top: 0;
+    border-left: none;
+    background: transparent;
+    padding: 10px 0;
+}
+
 @media (max-width: 768px) {
     .calculator-container {
         grid-template-columns: 1fr;
