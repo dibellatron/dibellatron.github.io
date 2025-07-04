@@ -383,17 +383,123 @@ function calculateComparison() {
     
     document.getElementById('results').innerHTML = resultsHTML;
     
-    // Create the break-even chart
-    createBreakEvenChart(monthlyRent, rentIncrease, buyingResults, timeframe, homePrice, downPayment, closingCosts, sellingCosts);
+    // Create both charts
+    createMonthlyCashFlowChart(monthlyRent, rentIncrease, buyingResults, timeframe, rentersInsurance, homePrice, downPayment, closingCosts, sellingCosts);
+    createBreakEvenChart(monthlyRent, rentIncrease, buyingResults, timeframe, homePrice, downPayment, closingCosts, sellingCosts, homeAppreciation, rentersInsurance);
     
     // Add detailed cost breakdown
     addDetailedBreakdown(rentingCost, buyingResults, timeframe, downPayment, investmentReturn, rentingWithInvestment, savingsWithOpportunityCost, securityDeposit, monthlyRent, brokerFee);
 }
 
 let breakEvenChart = null;
+let monthlyCashFlowChart = null;
 let currentBreakEvenYear = null;
 
-function createBreakEvenChart(initialRent, rentIncrease, buyingResults, maxYears, homePrice, downPayment, closingCosts, sellingCosts) {
+function createMonthlyCashFlowChart(initialRent, rentIncrease, buyingResults, maxYears, rentersInsurance, homePrice, downPayment, closingCosts, sellingCosts) {
+    // Destroy existing chart if it exists
+    if (monthlyCashFlowChart) {
+        monthlyCashFlowChart.destroy();
+        monthlyCashFlowChart = null;
+    }
+    
+    const ctx = document.getElementById('monthlyCashFlowChart').getContext('2d');
+    
+    // Generate monthly cost data including upfront costs
+    const years = [];
+    const rentingCosts = [];
+    const buyingCosts = [];
+    
+    // Calculate transaction costs for amortization
+    const totalClosingCosts = homePrice * (closingCosts / 100);
+    const totalSellingCosts = homePrice * (sellingCosts / 100);
+    const totalTransactionCosts = totalClosingCosts + totalSellingCosts;
+    
+    for (let year = 0; year <= maxYears; year++) {
+        years.push(year);
+        
+        // Calculate rent for this year (with increases)
+        let yearRent = initialRent;
+        for (let y = 1; y <= year; y++) {
+            yearRent = yearRent * (1 + rentIncrease / 100);
+        }
+        
+        rentingCosts.push(yearRent + rentersInsurance);
+        
+        // For buying: show effective monthly cost including amortized transaction costs
+        if (year === 0) {
+            // Year 0: Show massive upfront impact
+            buyingCosts.push(buyingResults.netMonthlyHousingCost + totalTransactionCosts);
+        } else {
+            // Year 1+: Show regular monthly cost + transaction costs amortized over remaining time
+            const monthlyTransactionCost = totalTransactionCosts / (year * 12);
+            buyingCosts.push(buyingResults.netMonthlyHousingCost + monthlyTransactionCost);
+        }
+    }
+    
+    monthlyCashFlowChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: years,
+            datasets: [{
+                label: 'Monthly Rent',
+                data: rentingCosts,
+                borderColor: '#2563eb',
+                borderWidth: 2,
+                fill: false,
+                pointRadius: 3
+            }, {
+                label: 'Monthly Buy Cost',
+                data: buyingCosts,
+                borderColor: '#16a34a',
+                borderWidth: 2,
+                fill: false,
+                pointRadius: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 1.5,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Monthly Cost ($)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Years'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'line',
+                        boxWidth: 20,
+                        font: {
+                            size: 14
+                        },
+                        padding: 20
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createBreakEvenChart(initialRent, rentIncrease, buyingResults, maxYears, homePrice, downPayment, closingCosts, sellingCosts, homeAppreciation, rentersInsurance) {
     const ctx = document.getElementById('breakEvenChart').getContext('2d');
     
     // Destroy existing chart if it exists
@@ -401,54 +507,76 @@ function createBreakEvenChart(initialRent, rentIncrease, buyingResults, maxYears
         breakEvenChart.destroy();
     }
     
-    // Calculate transaction costs
-    const totalClosingCosts = homePrice * (closingCosts / 100);
-    const totalSellingCosts = homePrice * (sellingCosts / 100); // Using current home value as approximation
-    const totalTransactionCosts = totalClosingCosts + totalSellingCosts;
-    
-    // Generate data points for each year
+    // Generate data points for cumulative costs
     const years = [];
     const rentingCosts = [];
     const buyingCosts = [];
     
+    let cumulativeRentCost = 0;
+    let cumulativeBuyCost = 0;
     let currentRent = initialRent;
     let breakEvenYear = null;
     
-    // Add year 0 (initial costs)
+    // Year 0 - initial costs
     years.push(0);
-    rentingCosts.push(initialRent);
-    // For year 0, buying cost includes all transaction costs amortized over 1 month plus regular monthly cost
-    buyingCosts.push(buyingResults.netMonthlyHousingCost + (totalTransactionCosts / 1));
+    cumulativeRentCost = (initialRent + (buyingResults.monthlyRentalIncome || 0)) * 0; // No costs at year 0
+    cumulativeBuyCost = downPayment + buyingResults.totalClosingCosts; // Initial investment
+    rentingCosts.push(cumulativeRentCost);
+    buyingCosts.push(cumulativeBuyCost);
     
     for (let year = 1; year <= maxYears; year++) {
         years.push(year);
         
-        // Calculate current rent for this year
-        let currentYearRent = initialRent;
+        // Calculate rent for this year (with increases)
+        let yearRent = initialRent;
         for (let y = 1; y < year; y++) {
-            currentYearRent = currentYearRent * (1 + rentIncrease / 100);
+            yearRent = yearRent * (1 + rentIncrease / 100);
         }
         
-        // Monthly buying cost = regular monthly cost + transaction costs amortized over the timeframe
-        const monthlyTransactionCost = totalTransactionCosts / (year * 12);
-        const monthlyBuyingCost = buyingResults.netMonthlyHousingCost + monthlyTransactionCost;
+        // Add this year's renting costs (rent increases each year)
+        cumulativeRentCost += (yearRent + rentersInsurance) * 12;
         
-        rentingCosts.push(currentYearRent);
-        buyingCosts.push(monthlyBuyingCost);
+        // For buying: calculate true economic cost
+        const annualHousingCosts = buyingResults.netMonthlyHousingCost * 12;
         
-        // Find break-even point where rent line crosses buying line
+        // Calculate home value growth this year using actual appreciation rate
+        const appreciationRate = homeAppreciation / 100;
+        const currentHomeValue = homePrice * Math.pow(1 + appreciationRate, year);
+        const previousHomeValue = homePrice * Math.pow(1 + appreciationRate, year - 1);
+        const annualAppreciation = currentHomeValue - previousHomeValue;
+        
+        // Estimate principal payment (increases over time, but approximate)
+        const totalPrincipal = homePrice - downPayment;
+        const approximatePrincipalPayment = (totalPrincipal / (30 * 12)) * 12; // Very rough estimate
+        
+        // True annual cost = what you pay minus wealth you build
+        const annualNetCost = annualHousingCosts - annualAppreciation - approximatePrincipalPayment;
+        cumulativeBuyCost += Math.max(annualNetCost, buyingResults.netMonthlyHousingCost * 12 * 0.3); // Minimum 30% of housing costs
+        
+        rentingCosts.push(cumulativeRentCost);
+        buyingCosts.push(cumulativeBuyCost);
+        
+        // Find break-even point where cumulative costs cross
         if (breakEvenYear === null && year > 0) {
-            const prevRent = rentingCosts[year - 1];
-            const currentRent = currentYearRent;
+            const prevRentCost = rentingCosts[year - 1];
+            const prevBuyCost = buyingCosts[year - 1];
+            const currentRentCost = cumulativeRentCost;
+            const currentBuyCost = cumulativeBuyCost;
             
-            // Check if lines crossed between previous year and current year
-            if ((prevRent <= monthlyBuyingCost && currentRent >= monthlyBuyingCost) ||
-                (prevRent >= monthlyBuyingCost && currentRent <= monthlyBuyingCost)) {
-                // Interpolate to find more precise break-even point
-                const slope = (currentRent - prevRent);
-                const intercept = prevRent - (year - 1) * slope;
-                const breakEvenX = (monthlyBuyingCost - intercept) / slope;
-                breakEvenYear = Math.max(0, Math.min(maxYears, breakEvenX));
+            // Check if lines crossed between this year and last year
+            if ((prevRentCost <= prevBuyCost && currentRentCost >= currentBuyCost) ||
+                (prevRentCost >= prevBuyCost && currentRentCost <= currentBuyCost)) {
+                // Linear interpolation to find more precise break-even point
+                const rentSlope = currentRentCost - prevRentCost;
+                const buySlope = currentBuyCost - prevBuyCost;
+                const slopeDiff = rentSlope - buySlope;
+                
+                if (Math.abs(slopeDiff) > 0.01) { // Avoid division by zero
+                    const intersection = (prevBuyCost - prevRentCost) / slopeDiff;
+                    breakEvenYear = Math.max(0, Math.min(1, intersection)) + (year - 1);
+                } else {
+                    breakEvenYear = year - 0.5;
+                }
             }
         }
     }
@@ -498,7 +626,7 @@ function createBreakEvenChart(initialRent, rentIncrease, buyingResults, maxYears
                     },
                     title: {
                         display: true,
-                        text: 'Effective Monthly Cost ($)'
+                        text: 'Cumulative Net Cost ($)'
                     }
                 },
                 x: {
