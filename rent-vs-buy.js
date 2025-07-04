@@ -49,10 +49,21 @@ function calculateInvestmentGrowth(principal, rate, years) {
     return principal * Math.pow(1 + rate / 100, years);
 }
 
+function getStandardDeduction(filingStatus) {
+    // 2024 standard deduction amounts
+    const standardDeductions = {
+        'single': 14600,
+        'marriedJoint': 29200,
+        'marriedSeparate': 14600,
+        'headOfHousehold': 21900
+    };
+    return standardDeductions[filingStatus] || 14600;
+}
+
 function calculateBuyingCosts(homePrice, downPayment, interestRate, mortgageTerm, 
                             homeAppreciation, rentalIncome, timeframe, investmentReturn, 
                             propertyTaxRate, homeInsurance, hoaFees, maintenanceRate, closingCosts,
-                            pmi, additionalUtilities, sellingCosts, marginalTaxRate, inflationRate, monthlyRent) {
+                            pmi, additionalUtilities, sellingCosts, marginalTaxRate, inflationRate, monthlyRent, filingStatus, monthlyInvestmentAmount) {
     const loanAmount = homePrice - downPayment;
     const monthlyMortgage = calculateMortgagePayment(loanAmount, interestRate, mortgageTerm);
     const monthlyRentalIncome = rentalIncome || 0;
@@ -89,7 +100,16 @@ function calculateBuyingCosts(homePrice, downPayment, interestRate, mortgageTerm
     
     // Calculate tax benefits (mortgage interest and property tax deductions)
     const annualMortgageInterest = loanAmount * (interestRate / 100); // Simplified - should decrease over time
-    const annualTaxBenefits = (annualMortgageInterest + annualPropertyTax) * (marginalTaxRate / 100);
+    const standardDeduction = getStandardDeduction(filingStatus);
+    const itemizedDeductions = annualMortgageInterest + annualPropertyTax;
+    
+    // Only get tax benefits if itemizing exceeds standard deduction
+    let annualTaxBenefits = 0;
+    if (itemizedDeductions > standardDeduction) {
+        // The tax benefit is only on the amount above the standard deduction
+        const additionalDeductions = itemizedDeductions - standardDeduction;
+        annualTaxBenefits = additionalDeductions * (marginalTaxRate / 100);
+    }
     const totalTaxBenefits = annualTaxBenefits * timeframe;
     
     // Calculate remaining loan balance
@@ -116,13 +136,15 @@ function calculateBuyingCosts(homePrice, downPayment, interestRate, mortgageTerm
     // Calculate monthly difference that could be invested
     const netMonthlyHousingCost = totalMonthlyHousingCost - monthlyRentalIncome;
     
-    // If buying costs less per month, calculate what you could invest with the difference
-    let monthlyInvestmentPotential = 0;
-    let totalMonthlyInvestmentGrowth = 0;
+    // Calculate the monthly difference between rent and buying
+    const monthlyDifference = Math.abs(monthlyRent - netMonthlyHousingCost);
     
-    if (monthlyRent > netMonthlyHousingCost) {
-        monthlyInvestmentPotential = monthlyRent - netMonthlyHousingCost;
-        // Calculate compound growth of monthly investments
+    // Use the user-specified monthly investment amount
+    const monthlyInvestmentPotential = monthlyInvestmentAmount || 0;
+    
+    // Calculate compound growth of monthly investments
+    let totalMonthlyInvestmentGrowth = 0;
+    if (monthlyInvestmentPotential > 0) {
         const monthlyRate = investmentReturn / 100 / 12;
         const months = timeframe * 12;
         if (monthlyRate > 0) {
@@ -167,6 +189,7 @@ function calculateBuyingCosts(homePrice, downPayment, interestRate, mortgageTerm
         monthlyAdditionalUtilities: monthlyAdditionalUtilities,
         netMonthlyHousingCost: netMonthlyHousingCost,
         downPaymentOpportunityCost: downPaymentOpportunityCost,
+        monthlyDifference: monthlyDifference,
         monthlyInvestmentPotential: monthlyInvestmentPotential,
         totalMonthlyInvestmentGrowth: totalMonthlyInvestmentGrowth
     };
@@ -214,6 +237,7 @@ function calculateComparison() {
     const marginalTaxRate = parseFloat(document.getElementById('marginalTaxRate').value);
     const capitalGainsTaxRate = parseFloat(document.getElementById('capitalGainsTaxRate').value);
     const inflationRate = parseFloat(document.getElementById('inflationRate').value);
+    const monthlyInvestmentAmount = parseFloat(document.getElementById('monthlyInvestmentAmount').value);
     
     // Validate inputs
     if (downPayment >= homePrice) {
@@ -226,7 +250,7 @@ function calculateComparison() {
     const buyingResults = calculateBuyingCosts(homePrice, downPayment, interestRate, 
                                             mortgageTerm, homeAppreciation, rentalIncome, timeframe, investmentReturn,
                                             propertyTaxRate, homeInsurance, hoaFees, maintenanceRate, closingCosts,
-                                            pmi, additionalUtilities, sellingCosts, marginalTaxRate, inflationRate, monthlyRent);
+                                            pmi, additionalUtilities, sellingCosts, marginalTaxRate, inflationRate, monthlyRent, filingStatus, monthlyInvestmentAmount);
     
     // Calculate renting with investment scenario
     const rentingWithInvestment = rentingCost + buyingResults.downPaymentOpportunityCost;
@@ -314,7 +338,8 @@ function calculateComparison() {
                     <p><strong>Annual Property Tax:</strong> ${formatCurrency(buyingResults.annualPropertyTax)}</p>
                     <p><strong>Total Tax Benefits Over ${timeframe} Years:</strong> ${formatCurrency(buyingResults.totalTaxBenefits)}</p>
                     <p><strong>Marginal Tax Rate Used:</strong> ${marginalTaxRate}%</p>
-                    <small>Tax benefits from mortgage interest and property tax deductions</small>
+                    <p><strong>Standard Deduction (${filingStatus}):</strong> ${formatCurrency(getStandardDeduction(filingStatus))}</p>
+                    <small>Tax benefits only apply if itemized deductions exceed standard deduction</small>
                 </div>
             </div>
         </div>
@@ -327,7 +352,8 @@ function calculateComparison() {
                 <div class="result-item">
                     <p><strong>Down Payment:</strong> ${formatCurrency(downPayment)}</p>
                     <p><strong>If Down Payment Was Invested:</strong> ${formatCurrency(buyingResults.downPaymentOpportunityCost)}</p>
-                    <p><strong>Monthly Investment Potential:</strong> ${formatCurrency(buyingResults.monthlyInvestmentPotential)}</p>
+                    <p><strong>Monthly Cost Difference:</strong> ${formatCurrency(buyingResults.monthlyDifference)}</p>
+                    <p><strong>Monthly Investment Amount:</strong> ${formatCurrency(buyingResults.monthlyInvestmentPotential)}</p>
                     <p><strong>Growth from Monthly Investments:</strong> ${formatCurrency(buyingResults.totalMonthlyInvestmentGrowth)}</p>
                 </div>
             </div>
