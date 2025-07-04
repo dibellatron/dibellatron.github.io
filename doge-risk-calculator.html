@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate your risk of job loss due to DOGE (Department of Government Efficiency) cuts. Comprehensive assessment for federal employees, contractors, and grant-funded workers.">
+    <meta name="keywords" content="DOGE, job loss, federal employee, government cuts, risk calculator, layoffs">
+    <meta name="author" content="DOGE Risk Calculator">
+    
+    <title>DOGE Job Loss Risk Calculator - Assess Your Employment Risk</title>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="doge-calculator.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="DOGE Job Loss Risk Calculator">
+    <meta property="og:description" content="Estimate your risk of job loss due to Department of Government Efficiency cuts">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dibellatron.github.io/doge-risk-calculator.html">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="DOGE Job Loss Risk Calculator">
+    <meta name="twitter:description" content="Estimate your risk of job loss due to Department of Government Efficiency cuts">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🏛️ DOGE Job Loss Risk Calculator</h1>
+            <p>Estimate your risk of job loss due to Department of Government Efficiency cuts based on current data and trends</p>
+        </header>
+
+        <main class="form-container">
+            <form id="riskForm" novalidate>
+                <h2 class="section-title">Employment Information</h2>
+                
+                <div class="form-group">
+                    <label for="employmentType">Employment Type: <span aria-label="required">*</span></label>
+                    <select id="employmentType" required aria-describedby="employmentType-help">
+                        <option value="">Select your employment type</option>
+                        <option value="federal">Federal government employee</option>
+                        <option value="contractor">Contractor (private sector) on federal project</option>
+                        <option value="grant">Researcher on federal grant</option>
+                        <option value="nonprofit">Non-profit or local gov with federal funds</option>
+                        <option value="private">Private sector (no federal funding)</option>
+                    </select>
+                    <small id="employmentType-help">Choose the category that best describes your employment situation</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="agency">Federal Agency or Sector:</label>
+                    <select id="agency" aria-describedby="agency-help">
+                        <option value="">Select agency (if applicable)</option>
+                        <option value="cfpb">Consumer Financial Protection Bureau (CFPB)</option>
+                        <option value="education">Department of Education</option>
+                        <option value="hhs">Health and Human Services (HHS/CDC/NIH/FDA)</option>
+                        <option value="irs">Internal Revenue Service (IRS)</option>
+                        <option value="state">State Department</option>
+                        <option value="dhs">Department of Homeland Security</option>
+                        <option value="usda">Department of Agriculture (USDA)</option>
+                        <option value="epa">Environmental Protection Agency (EPA)</option>
+                        <option value="dod">Department of Defense (DoD)</option>
+                        <option value="va">Department of Veterans Affairs</option>
+                        <option value="interior">Department of Interior</option>
+                        <option value="commerce">Department of Commerce</option>
+                        <option value="labor">Department of Labor</option>
+                        <option value="treasury">Department of Treasury</option>
+                        <option value="justice">Department of Justice</option>
+                        <option value="energy">Department of Energy</option>
+                        <option value="transportation">Department of Transportation</option>
+                        <option value="housing">Department of Housing and Urban Development</option>
+                        <option value="nsf">National Science Foundation</option>
+                        <option value="nasa">NASA</option>
+                        <option value="usaid">USAID</option>
+                        <option value="other">Other federal agency</option>
+                    </select>
+                    <small id="agency-help">Select the agency that funds your work or employs you</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="tenure">Job Tenure: <span aria-label="required">*</span></label>
+                    <select id="tenure" required aria-describedby="tenure-help">
+                        <option value="">Select your tenure</option>
+                        <option value="probationary">Less than 1 year (probationary status)</option>
+                        <option value="new">1-2 years</option>
+                        <option value="established">3-5 years</option>
+                        <option value="senior">More than 5 years</option>
+                    </select>
+                    <small id="tenure-help">How long have you been in your current position or on your current funding?</small>
+                </div>
+
+                <h2 class="section-title">Role Characteristics</h2>
+
+                <div class="form-group">
+                    <label for="essential">Essential Role Status:</label>
+                    <select id="essential" aria-describedby="essential-help">
+                        <option value="no">No</option>
+                        <option value="yes">Yes - Public safety, national security, or critical operations</option>
+                    </select>
+                    <small id="essential-help">Is your role directly related to essential government functions?</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="senior">Senior or Politically Sensitive Position:</label>
+                    <select id="senior" aria-describedby="senior-help">
+                        <option value="no">No</option>
+                        <option value="yes">Yes - Senior executive, Inspector General, or politically sensitive role</option>
+                    </select>
+                    <small id="senior-help">Are you in a high-level or politically visible position?</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Program Areas (check all that apply):</label>
+                    <div class="checkbox-group" role="group" aria-describedby="programArea-help">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="climate" name="programArea" value="climate">
+                            <label for="climate">Climate/Environment</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="equity" name="programArea" value="equity">
+                            <label for="equity">Diversity/Equity initiatives</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="research" name="programArea" value="research">
+                            <label for="research">Healthcare/Science Research</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="defense" name="programArea" value="defense">
+                            <label for="defense">Defense/National Security</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="admin" name="programArea" value="admin">
+                            <label for="admin">Administration/Support</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="regulatory" name="programArea" value="regulatory">
+                            <label for="regulatory">Regulatory oversight</label>
+                        </div>
+                    </div>
+                    <small id="programArea-help">Select areas that describe your work responsibilities</small>
+                </div>
+
+                <h2 class="section-title">Current Situation</h2>
+
+                <div class="form-group">
+                    <label for="survived">Previous Layoff Rounds:</label>
+                    <select id="survived" aria-describedby="survived-help">
+                        <option value="no">No previous layoffs in my office/agency</option>
+                        <option value="yes">Yes - My office/agency had layoffs but I was retained</option>
+                    </select>
+                    <small id="survived-help">Has your workplace already experienced DOGE-related layoffs?</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="funding">Current Funding Status:</label>
+                    <select id="funding" aria-describedby="funding-help">
+                        <option value="stable">Funding appears stable</option>
+                        <option value="uncertain">Funding uncertain or under review</option>
+                        <option value="reduced">Funding has been reduced or canceled</option>
+                    </select>
+                    <small id="funding-help">What is the current status of your project funding or budget?</small>
+                </div>
+
+                <button type="submit" class="calculate-btn" aria-describedby="calculate-help">
+                    Calculate My Risk
+                </button>
+                <small id="calculate-help">Click to generate your personalized risk assessment</small>
+            </form>
+
+            <section id="results" class="results" aria-live="polite">
+                <h2>Your Job Loss Risk Assessment</h2>
+                <div class="risk-timeline" id="riskTimeline" role="region" aria-label="Risk timeline"></div>
+                <div class="risk-interpretation" id="interpretation" role="region" aria-label="Risk interpretation"></div>
+                <div class="disclaimer">
+                    <strong>Important Disclaimer:</strong> This calculator provides estimates based on available data about DOGE-related layoffs and policies through 2025. Results are for informational purposes only and should not be considered definitive predictions. Individual circumstances may vary significantly. Always consult with professional advisors for career and financial planning decisions. This tool is not affiliated with any government agency.
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="doge-calculator.js"></script>
+</body>
+</html>
