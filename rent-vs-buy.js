@@ -358,7 +358,7 @@ function calculateComparison() {
     createBreakEvenChart(monthlyRent, rentIncrease, buyingResults, timeframe, homePrice, downPayment, closingCosts, sellingCosts);
     
     // Add detailed cost breakdown
-    addDetailedBreakdown(rentingCost, buyingResults, timeframe, downPayment, investmentReturn, rentingWithInvestment, savingsWithOpportunityCost);
+    addDetailedBreakdown(rentingCost, buyingResults, timeframe, downPayment, investmentReturn, rentingWithInvestment, savingsWithOpportunityCost, securityDeposit, monthlyRent, brokerFee);
 }
 
 let breakEvenChart = null;
@@ -551,24 +551,17 @@ function createBreakEvenChart(initialRent, rentIncrease, buyingResults, maxYears
     breakEvenChart = new Chart(ctx, config);
 }
 
-function addDetailedBreakdown(rentingCost, buyingResults, timeframe, downPayment, investmentReturn, rentingWithInvestment, savingsWithOpportunityCost) {
-    // Use the same calculation logic as main results for consistency
-    const rentInitialCosts = 2000; // Security deposit, moving costs
-    const buyInitialCosts = downPayment + 5000 + 4009; // Down payment + closing costs + other fees
+function addDetailedBreakdown(rentingCost, buyingResults, timeframe, downPayment, investmentReturn, rentingWithInvestment, savingsWithOpportunityCost, securityDeposit, monthlyRent, brokerFee) {
+    // Calculate breakdown components for the detailed table
+    const rentInitialCosts = securityDeposit * monthlyRent + brokerFee;
+    const rentRecurringCosts = rentingCost - rentInitialCosts;
+    const rentNetProceeds = securityDeposit * monthlyRent; // Get security deposit back
     
-    const rentRecurringCosts = rentingCost;
-    const buyRecurringCosts = buyingResults.totalHousingCosts - buyingResults.totalRentalIncome;
+    const buyInitialCosts = downPayment + buyingResults.totalClosingCosts;
+    const buyRecurringCosts = buyingResults.totalHousingCosts - buyingResults.totalRentalIncome - buyingResults.totalTaxBenefits;
     
-    // Use the same opportunity cost calculation as main results
-    const rentOpportunityCosts = buyingResults.downPaymentOpportunityCost - downPayment; // Only down payment opportunity cost
-    const buyOpportunityCosts = 0; // No opportunity cost for buying (it's already in the totalCost)
-    
-    const rentNetProceeds = -2000; // Get security deposit back
-    const buyNetProceeds = -buyingResults.netProceeds;
-    
-    // Calculate totals that match the main results
-    const rentTotal = rentingWithInvestment;
-    const buyTotal = buyingResults.totalCost + buyingResults.totalMonthlyInvestmentGrowth;
+    const rentTotal = rentInitialCosts + rentRecurringCosts - rentNetProceeds + buyingResults.downPaymentOpportunityCost;
+    const buyTotal = buyInitialCosts + buyRecurringCosts - buyingResults.netProceeds + buyingResults.totalMonthlyInvestmentGrowth;
     
     const savings = rentTotal - buyTotal;
     const betterOption = savings > 0 ? 'buying' : 'renting';
@@ -593,9 +586,19 @@ function addDetailedBreakdown(rentingCost, buyingResults, timeframe, downPayment
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="category">Base costs <span class="tooltip-icon" data-tooltip="base">?</span></td>
-                        <td class="rent-col">${formatCurrency(rentingCost)}</td>
-                        <td class="buy-col">${formatCurrency(buyingResults.totalCost)}</td>
+                        <td class="category">Initial costs <span class="tooltip-icon" data-tooltip="initial">?</span></td>
+                        <td class="rent-col">${formatCurrency(securityDeposit * monthlyRent + brokerFee)}</td>
+                        <td class="buy-col">${formatCurrency(downPayment + buyingResults.totalClosingCosts)}</td>
+                    </tr>
+                    <tr>
+                        <td class="category">Recurring costs <span class="tooltip-icon" data-tooltip="recurring">?</span></td>
+                        <td class="rent-col">${formatCurrency(rentingCost - securityDeposit * monthlyRent - brokerFee)}</td>
+                        <td class="buy-col">${formatCurrency(buyingResults.totalHousingCosts - buyingResults.totalRentalIncome - buyingResults.totalTaxBenefits)}</td>
+                    </tr>
+                    <tr>
+                        <td class="category">Net proceeds <span class="tooltip-icon" data-tooltip="proceeds">?</span></td>
+                        <td class="rent-col">${formatCurrency(securityDeposit * monthlyRent)}</td>
+                        <td class="buy-col">${formatCurrency(buyingResults.netProceeds)}</td>
                     </tr>
                     <tr>
                         <td class="category">Investment opportunity <span class="tooltip-icon" data-tooltip="opportunity">?</span></td>
@@ -622,7 +625,8 @@ function addDetailedBreakdown(rentingCost, buyingResults, timeframe, downPayment
 
 function addTooltipListeners() {
     const tooltipTexts = {
-        base: "<strong>Base costs:</strong><br>Renting: Total rent payments over the timeframe<br>Buying: All homeownership costs (down payment, mortgage, taxes, insurance, maintenance) minus home appreciation and rental income",
+        initial: "<strong>Initial costs:</strong><br>Renting: Security deposit and broker fees<br>Buying: Down payment and closing costs (loan origination, appraisal, inspection, etc.)",
+        recurring: "<strong>Recurring costs:</strong><br>Renting: All rent payments over the timeframe<br>Buying: Mortgage payments, property taxes, insurance, maintenance, PMI, utilities minus rental income and tax benefits",
         opportunity: "<strong>Investment opportunity:</strong><br>Renting: What the down payment would grow to if invested in the stock market<br>Buying: What monthly savings from lower housing costs would grow to if invested",
         proceeds: "<strong>Net proceeds:</strong><br>Renting: Security deposit returned<br>Buying: Money received from selling the home, minus realtor fees and remaining mortgage balance"
     };
