@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grant Calculators - Financial Decision Tools</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .calculator-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+            transition: transform 0.2s ease;
+        }
+        .calculator-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .calculator-title {
+            color: #2c3e50;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .calculator-description {
+            color: #6c757d;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .calculator-features {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+        .calculator-features li {
+            color: #495057;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .calculator-features li:before {
+            content: "✓ ";
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .launch-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+        .coming-soon {
+            opacity: 0.6;
+            border-left-color: #95a5a6;
+        }
+        .coming-soon .launch-btn {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+        .footer {
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Grant Calculators</h1>
+        <p class="subtitle">Financial decision tools for smarter investing</p>
+        
+        <div class="calculator-card">
+            <div class="calculator-title">🏠 Enhanced Rent vs Buy Calculator</div>
+            <div class="calculator-description">
+                Advanced calculator that factors in house hacking rental income and investment opportunity costs
+            </div>
+            <ul class="calculator-features">
+                <li>House hacking rental income integration</li>
+                <li>Investment opportunity cost analysis</li>
+                <li>Comprehensive homeownership costs</li>
+                <li>Interactive break-even chart</li>
+                <li>Professional cost breakdown</li>
+            </ul>
+            <a href="rent-vs-buy.html" class="launch-btn">Launch Calculator</a>
+        </div>
+        
+        <div class="calculator-card coming-soon">
+            <div class="calculator-title">🏢 Investment Property Analyzer</div>
+            <div class="calculator-description">
+                Comprehensive analysis for rental property investments including cash flow and ROI calculations
+            </div>
+            <button class="launch-btn" disabled>Coming Soon</button>
+        </div>
+        
+        <div class="calculator-card coming-soon">
+            <div class="calculator-title">🔄 Refinancing Calculator</div>
+            <div class="calculator-description">
+                Determine if refinancing makes financial sense based on rates, costs, and timeline
+            </div>
+            <button class="launch-btn" disabled>Coming Soon</button>
+        </div>
+        
+        <div class="footer">
+            <p>Made with ❤️ for smarter financial decisions</p>
+            <p><a href="https://github.com/dibellatron/GrantCalculators" style="color: #3498db;">View on GitHub</a></p>
+        </div>
+    </div>
+</body>
+</html>

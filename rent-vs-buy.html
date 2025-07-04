@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Rent vs Buy Calculator</title>
+    <link rel="stylesheet" href="rent-vs-buy.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Enhanced Rent vs Buy Calculator</h1>
+        <p class="subtitle">Compare renting vs buying with rental income from house hacking</p>
+        
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2>Home Purchase Details</h2>
+                <div class="input-group">
+                    <label for="homePrice">Home Price ($)</label>
+                    <input type="number" id="homePrice" value="400000" min="0" step="1000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="downPayment">Down Payment ($)</label>
+                    <input type="number" id="downPayment" value="80000" min="0" step="1000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="interestRate">Interest Rate (%)</label>
+                    <input type="number" id="interestRate" value="7.0" min="0" max="20" step="0.1">
+                </div>
+                
+                <div class="input-group">
+                    <label for="mortgageTerm">Mortgage Term (years)</label>
+                    <input type="number" id="mortgageTerm" value="30" min="1" max="50">
+                </div>
+                
+                <div class="input-group">
+                    <label for="homeAppreciation">Annual Home Appreciation (%)</label>
+                    <input type="number" id="homeAppreciation" value="3.0" min="0" max="20" step="0.1">
+                </div>
+                
+                <h2>Homeownership Costs</h2>
+                <div class="input-group">
+                    <label for="propertyTax">Annual Property Tax ($)</label>
+                    <input type="number" id="propertyTax" value="6000" min="0" step="100">
+                    <small>Typical: 1-2% of home value annually</small>
+                </div>
+                
+                <div class="input-group">
+                    <label for="homeInsurance">Annual Home Insurance ($)</label>
+                    <input type="number" id="homeInsurance" value="1200" min="0" step="50">
+                    <small>Typical: $1,000-2,000 annually</small>
+                </div>
+                
+                <div class="input-group">
+                    <label for="hoaFees">Monthly HOA Fees ($)</label>
+                    <input type="number" id="hoaFees" value="0" min="0" step="25">
+                    <small>Leave as 0 if no HOA</small>
+                </div>
+                
+                <div class="input-group">
+                    <label for="maintenanceRate">Annual Maintenance & Repairs (% of home value)</label>
+                    <input type="number" id="maintenanceRate" value="1.5" min="0" max="5" step="0.1">
+                    <small>Typical: 1-2% of home value annually (NerdWallet recommends 1.5%)</small>
+                </div>
+                
+                <h2>Rental Details</h2>
+                <div class="input-group">
+                    <label for="monthlyRent">Monthly Rent ($)</label>
+                    <input type="number" id="monthlyRent" value="2500" min="0" step="50">
+                </div>
+                
+                <div class="input-group">
+                    <label for="rentIncrease">Annual Rent Increase (%)</label>
+                    <input type="number" id="rentIncrease" value="3.0" min="0" max="20" step="0.1">
+                </div>
+                
+                <h2>House Hacking Income</h2>
+                <div class="input-group">
+                    <label for="rentalIncome">Monthly Rental Income ($)</label>
+                    <input type="number" id="rentalIncome" value="800" min="0" step="50">
+                    <small>Income from renting out a room/basement/ADU</small>
+                </div>
+                
+                <h2>Investment & Opportunity Cost</h2>
+                <div class="input-group">
+                    <label for="investmentReturn">Expected Annual Investment Return (%)</label>
+                    <input type="number" id="investmentReturn" value="7.0" min="0" max="20" step="0.1">
+                    <small>What you could earn by investing instead (e.g. stock market average)</small>
+                </div>
+                
+                <div class="input-group">
+                    <label for="timeframe">How many years will you stay?</label>
+                    <input type="number" id="timeframe" value="7" min="1" max="30">
+                </div>
+                
+                <button onclick="calculateComparison()" class="calculate-btn">Calculate</button>
+            </div>
+            
+            <div class="results-section">
+                <h2>Results</h2>
+                <div id="results">
+                    <p>Enter your details and click Calculate to see the comparison</p>
+                </div>
+                
+                <div class="chart-container">
+                    <h3>Break-Even Analysis</h3>
+                    <canvas id="breakEvenChart"></canvas>
+                </div>
+                
+                <div id="detailedBreakdown"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="rent-vs-buy.js"></script>
+</body>
+</html>
