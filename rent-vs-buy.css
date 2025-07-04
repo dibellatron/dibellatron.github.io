@@ -78,6 +78,21 @@ input[type="number"]:focus {
     border-color: #3498db;
 }
 
+select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    background-color: white;
+}
+
+select:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
 small {
     display: block;
     margin-top: 5px;
@@ -355,6 +370,34 @@ small {
     border-left: none;
     background: transparent;
     padding: 10px 0;
+}
+
+.options-toggle {
+    margin: 20px 0;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #3498db;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+}
+
+.toggle-btn:hover {
+    color: #2980b9;
+}
+
+.hidden-options {
+    display: none;
+    margin-top: 20px;
+}
+
+.hidden-options.show {
+    display: block;
 }
 
 @media (max-width: 768px) {

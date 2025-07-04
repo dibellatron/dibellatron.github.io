@@ -17,14 +17,30 @@ function calculateHomeValue(initialPrice, appreciationRate, years) {
     return initialPrice * Math.pow(1 + appreciationRate / 100, years);
 }
 
-function calculateRentCost(initialRent, increaseRate, years) {
+function calculateRentCost(initialRent, increaseRate, years, securityDeposit, rentersInsurance, brokerFee, inflationRate) {
     let totalCost = 0;
     let currentRent = initialRent;
+    let currentInsurance = rentersInsurance;
+    
+    // Initial costs
+    const securityDepositAmount = initialRent * securityDeposit;
+    totalCost += securityDepositAmount; // Security deposit (will be returned at end, so net effect is 0)
+    totalCost += brokerFee; // One-time broker fee
     
     for (let year = 1; year <= years; year++) {
+        // Add rent for the year
         totalCost += currentRent * 12;
+        
+        // Add renter's insurance for the year (adjusted for inflation)
+        totalCost += currentInsurance * 12;
+        
+        // Increase rent and insurance for next year
         currentRent = currentRent * (1 + increaseRate / 100);
+        currentInsurance = currentInsurance * (1 + inflationRate / 100);
     }
+    
+    // Subtract security deposit return (assuming you get it back)
+    totalCost -= securityDepositAmount;
     
     return totalCost;
 }
@@ -35,26 +51,32 @@ function calculateInvestmentGrowth(principal, rate, years) {
 
 function calculateBuyingCosts(homePrice, downPayment, interestRate, mortgageTerm, 
                             homeAppreciation, rentalIncome, timeframe, investmentReturn, 
-                            propertyTax, homeInsurance, hoaFees, maintenanceRate, closingCosts) {
+                            propertyTaxRate, homeInsurance, hoaFees, maintenanceRate, closingCosts,
+                            pmi, additionalUtilities, sellingCosts, marginalTaxRate, inflationRate, monthlyRent) {
     const loanAmount = homePrice - downPayment;
     const monthlyMortgage = calculateMortgagePayment(loanAmount, interestRate, mortgageTerm);
     const monthlyRentalIncome = rentalIncome || 0;
     
     // Calculate monthly homeownership costs
-    const monthlyPropertyTax = propertyTax / 12;
+    const annualPropertyTax = homePrice * (propertyTaxRate / 100);
+    const monthlyPropertyTax = annualPropertyTax / 12;
     const monthlyHomeInsurance = homeInsurance / 12;
     const monthlyHoaFees = hoaFees || 0;
+    const monthlyPmi = pmi || 0;
+    const monthlyAdditionalUtilities = additionalUtilities || 0;
     const annualMaintenance = (homePrice * maintenanceRate) / 100;
     const monthlyMaintenance = annualMaintenance / 12;
-    const totalMonthlyHousingCost = monthlyMortgage + monthlyPropertyTax + monthlyHomeInsurance + monthlyHoaFees + monthlyMaintenance;
+    const totalMonthlyHousingCost = monthlyMortgage + monthlyPropertyTax + monthlyHomeInsurance + monthlyHoaFees + monthlyPmi + monthlyAdditionalUtilities + monthlyMaintenance;
     
-    // Calculate total costs over the timeframe
+    // Calculate total costs over the timeframe (with inflation adjustments)
     const totalMortgagePayments = monthlyMortgage * 12 * timeframe;
-    const totalPropertyTax = propertyTax * timeframe;
-    const totalHomeInsurance = homeInsurance * timeframe;
-    const totalHoaFees = monthlyHoaFees * 12 * timeframe;
-    const totalMaintenance = annualMaintenance * timeframe;
-    const totalHousingCosts = totalMortgagePayments + totalPropertyTax + totalHomeInsurance + totalHoaFees + totalMaintenance;
+    const totalPropertyTax = annualPropertyTax * timeframe; // Could be inflation adjusted
+    const totalHomeInsurance = homeInsurance * timeframe; // Could be inflation adjusted
+    const totalHoaFees = monthlyHoaFees * 12 * timeframe; // Could be inflation adjusted
+    const totalPmi = monthlyPmi * 12 * timeframe;
+    const totalAdditionalUtilities = monthlyAdditionalUtilities * 12 * timeframe; // Could be inflation adjusted
+    const totalMaintenance = annualMaintenance * timeframe; // Could be inflation adjusted
+    const totalHousingCosts = totalMortgagePayments + totalPropertyTax + totalHomeInsurance + totalHoaFees + totalPmi + totalAdditionalUtilities + totalMaintenance;
     
     // Calculate total rental income received
     const totalRentalIncome = monthlyRentalIncome * 12 * timeframe;
@@ -62,8 +84,13 @@ function calculateBuyingCosts(homePrice, downPayment, interestRate, mortgageTerm
     // Calculate home value after appreciation
     const futureHomeValue = calculateHomeValue(homePrice, homeAppreciation, timeframe);
     
-    // Calculate selling costs (6% realtor fee)
-    const sellingCosts = futureHomeValue * 0.06;
+    // Calculate selling costs (configurable realtor fee)
+    const totalSellingCosts = futureHomeValue * (sellingCosts / 100);
+    
+    // Calculate tax benefits (mortgage interest and property tax deductions)
+    const annualMortgageInterest = loanAmount * (interestRate / 100); // Simplified - should decrease over time
+    const annualTaxBenefits = (annualMortgageInterest + annualPropertyTax) * (marginalTaxRate / 100);
+    const totalTaxBenefits = annualTaxBenefits * timeframe;
     
     // Calculate remaining loan balance
     const monthlyRate = interestRate / 100 / 12;
@@ -78,7 +105,7 @@ function calculateBuyingCosts(homePrice, downPayment, interestRate, mortgageTerm
     }
     
     // Calculate net proceeds from sale
-    const netProceeds = futureHomeValue - sellingCosts - remainingBalance;
+    const netProceeds = futureHomeValue - totalSellingCosts - remainingBalance;
     
     // Calculate closing costs
     const totalClosingCosts = homePrice * (closingCosts / 100);
@@ -88,14 +115,13 @@ function calculateBuyingCosts(homePrice, downPayment, interestRate, mortgageTerm
     
     // Calculate monthly difference that could be invested
     const netMonthlyHousingCost = totalMonthlyHousingCost - monthlyRentalIncome;
-    const monthlyRentCost = monthlyRent; // Current rent amount
     
     // If buying costs less per month, calculate what you could invest with the difference
     let monthlyInvestmentPotential = 0;
     let totalMonthlyInvestmentGrowth = 0;
     
-    if (monthlyRentCost > netMonthlyHousingCost) {
-        monthlyInvestmentPotential = monthlyRentCost - netMonthlyHousingCost;
+    if (monthlyRent > netMonthlyHousingCost) {
+        monthlyInvestmentPotential = monthlyRent - netMonthlyHousingCost;
         // Calculate compound growth of monthly investments
         const monthlyRate = investmentReturn / 100 / 12;
         const months = timeframe * 12;
@@ -107,8 +133,8 @@ function calculateBuyingCosts(homePrice, downPayment, interestRate, mortgageTerm
         }
     }
     
-    // Total cost of buying = Down payment + Closing costs + All housing costs - Rental income - Net proceeds
-    const totalCost = downPayment + totalClosingCosts + totalHousingCosts - totalRentalIncome - netProceeds;
+    // Total cost of buying = Down payment + Closing costs + All housing costs - Rental income - Net proceeds - Tax benefits
+    const totalCost = downPayment + totalClosingCosts + totalHousingCosts - totalRentalIncome - netProceeds - totalTaxBenefits;
     
     return {
         totalCost: totalCost,
@@ -126,11 +152,19 @@ function calculateBuyingCosts(homePrice, downPayment, interestRate, mortgageTerm
         totalPropertyTax: totalPropertyTax,
         totalHomeInsurance: totalHomeInsurance,
         totalHoaFees: totalHoaFees,
+        totalPmi: totalPmi,
+        totalAdditionalUtilities: totalAdditionalUtilities,
         totalMaintenance: totalMaintenance,
         totalHousingCosts: totalHousingCosts,
         totalRentalIncome: totalRentalIncome,
+        totalSellingCosts: totalSellingCosts,
         sellingCosts: sellingCosts,
         totalClosingCosts: totalClosingCosts,
+        totalTaxBenefits: totalTaxBenefits,
+        annualPropertyTax: annualPropertyTax,
+        monthlyPmi: monthlyPmi,
+        monthlyAdditionalUtilities: monthlyAdditionalUtilities,
+        netMonthlyHousingCost: netMonthlyHousingCost,
         downPaymentOpportunityCost: downPaymentOpportunityCost,
         monthlyInvestmentPotential: monthlyInvestmentPotential,
         totalMonthlyInvestmentGrowth: totalMonthlyInvestmentGrowth
@@ -147,22 +181,38 @@ function formatCurrency(amount) {
 }
 
 function calculateComparison() {
-    // Get input values
+    // Get input values - Renting
+    const monthlyRent = parseFloat(document.getElementById('monthlyRent').value);
+    const securityDeposit = parseFloat(document.getElementById('securityDeposit').value);
+    const rentersInsurance = parseFloat(document.getElementById('rentersInsurance').value);
+    const brokerFee = parseFloat(document.getElementById('brokerFee').value);
+    const rentIncrease = parseFloat(document.getElementById('rentIncrease').value);
+    
+    // Get input values - Buying
     const homePrice = parseFloat(document.getElementById('homePrice').value);
     const downPayment = parseFloat(document.getElementById('downPayment').value);
-    const interestRate = parseFloat(document.getElementById('interestRate').value);
     const mortgageTerm = parseInt(document.getElementById('mortgageTerm').value);
-    const homeAppreciation = parseFloat(document.getElementById('homeAppreciation').value);
-    const monthlyRent = parseFloat(document.getElementById('monthlyRent').value);
-    const rentIncrease = parseFloat(document.getElementById('rentIncrease').value);
-    const rentalIncome = parseFloat(document.getElementById('rentalIncome').value);
-    const investmentReturn = parseFloat(document.getElementById('investmentReturn').value);
-    const propertyTax = parseFloat(document.getElementById('propertyTax').value);
+    const interestRate = parseFloat(document.getElementById('interestRate').value);
+    const closingCosts = parseFloat(document.getElementById('closingCosts').value);
+    const propertyTaxRate = parseFloat(document.getElementById('propertyTaxRate').value);
     const homeInsurance = parseFloat(document.getElementById('homeInsurance').value);
     const hoaFees = parseFloat(document.getElementById('hoaFees').value);
+    const pmi = parseFloat(document.getElementById('pmi').value);
+    const additionalUtilities = parseFloat(document.getElementById('additionalUtilities').value);
     const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value);
-    const closingCosts = parseFloat(document.getElementById('closingCosts').value);
+    const sellingCosts = parseFloat(document.getElementById('sellingCosts').value);
+    const homeAppreciation = parseFloat(document.getElementById('homeAppreciation').value);
+    
+    // House hacking
+    const rentalIncome = parseFloat(document.getElementById('rentalIncome').value);
+    
+    // Additional info
     const timeframe = parseInt(document.getElementById('timeframe').value);
+    const investmentReturn = parseFloat(document.getElementById('investmentReturn').value);
+    const filingStatus = document.getElementById('filingStatus').value;
+    const marginalTaxRate = parseFloat(document.getElementById('marginalTaxRate').value);
+    const capitalGainsTaxRate = parseFloat(document.getElementById('capitalGainsTaxRate').value);
+    const inflationRate = parseFloat(document.getElementById('inflationRate').value);
     
     // Validate inputs
     if (downPayment >= homePrice) {
@@ -171,10 +221,11 @@ function calculateComparison() {
     }
     
     // Calculate costs
-    const rentingCost = calculateRentCost(monthlyRent, rentIncrease, timeframe);
+    const rentingCost = calculateRentCost(monthlyRent, rentIncrease, timeframe, securityDeposit, rentersInsurance, brokerFee, inflationRate);
     const buyingResults = calculateBuyingCosts(homePrice, downPayment, interestRate, 
                                             mortgageTerm, homeAppreciation, rentalIncome, timeframe, investmentReturn,
-                                            propertyTax, homeInsurance, hoaFees, maintenanceRate, closingCosts);
+                                            propertyTaxRate, homeInsurance, hoaFees, maintenanceRate, closingCosts,
+                                            pmi, additionalUtilities, sellingCosts, marginalTaxRate, inflationRate, monthlyRent);
     
     // Calculate renting with investment scenario
     const rentingWithInvestment = rentingCost + buyingResults.downPaymentOpportunityCost;
@@ -215,6 +266,8 @@ function calculateComparison() {
                     <p><strong>Monthly Property Tax:</strong> ${formatCurrency(buyingResults.monthlyPropertyTax)}</p>
                     <p><strong>Monthly Home Insurance:</strong> ${formatCurrency(buyingResults.monthlyHomeInsurance)}</p>
                     <p><strong>Monthly HOA Fees:</strong> ${formatCurrency(buyingResults.monthlyHoaFees)}</p>
+                    <p><strong>Monthly PMI:</strong> ${formatCurrency(buyingResults.monthlyPmi)}</p>
+                    <p><strong>Monthly Additional Utilities:</strong> ${formatCurrency(buyingResults.monthlyAdditionalUtilities)}</p>
                     <p><strong>Monthly Maintenance & Repairs:</strong> ${formatCurrency(buyingResults.monthlyMaintenance)}</p>
                     <p><strong>Total Monthly Housing Cost:</strong> ${formatCurrency(buyingResults.totalMonthlyHousingCost)}</p>
                     <p><strong>Monthly Rental Income:</strong> ${formatCurrency(buyingResults.monthlyRentalIncome)}</p>
@@ -233,7 +286,7 @@ function calculateComparison() {
                     <p><strong>Closing Costs (${closingCosts}%):</strong> ${formatCurrency(buyingResults.totalClosingCosts)}</p>
                     <p><strong>Home Value After ${timeframe} Years:</strong> ${formatCurrency(buyingResults.futureHomeValue)}</p>
                     <p><strong>Net Proceeds from Sale:</strong> ${formatCurrency(buyingResults.netProceeds)}</p>
-                    <p><strong>Selling Costs (6% realtor fee):</strong> ${formatCurrency(buyingResults.sellingCosts)}</p>
+                    <p><strong>Selling Costs (${sellingCosts}% realtor fee):</strong> ${formatCurrency(buyingResults.totalSellingCosts)}</p>
                 </div>
             </div>
         </div>
@@ -247,6 +300,20 @@ function calculateComparison() {
                     <p><strong>Monthly Rental Income:</strong> ${formatCurrency(buyingResults.monthlyRentalIncome)}</p>
                     <p><strong>Total Rental Income Over ${timeframe} Years:</strong> ${formatCurrency(buyingResults.totalRentalIncome)}</p>
                     <p><strong>Impact on Monthly Housing Cost:</strong> Reduces by ${formatCurrency(buyingResults.monthlyRentalIncome)}/month</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('tax-benefits')">
+                <h3>Tax Benefits <span class="expand-icon">▼</span></h3>
+            </div>
+            <div class="collapsible-content" id="tax-benefits">
+                <div class="result-item">
+                    <p><strong>Annual Property Tax:</strong> ${formatCurrency(buyingResults.annualPropertyTax)}</p>
+                    <p><strong>Total Tax Benefits Over ${timeframe} Years:</strong> ${formatCurrency(buyingResults.totalTaxBenefits)}</p>
+                    <p><strong>Marginal Tax Rate Used:</strong> ${marginalTaxRate}%</p>
+                    <small>Tax benefits from mortgage interest and property tax deductions</small>
                 </div>
             </div>
         </div>
@@ -620,6 +687,19 @@ function toggleSection(sectionId) {
     } else {
         content.classList.add('expanded');
         header.classList.add('expanded');
+    }
+}
+
+function toggleOptions(optionsId) {
+    const options = document.getElementById(optionsId);
+    const toggleText = document.getElementById(optionsId.replace('-options', '-toggle-text'));
+    
+    if (options.classList.contains('show')) {
+        options.classList.remove('show');
+        toggleText.textContent = 'SHOW OPTIONS';
+    } else {
+        options.classList.add('show');
+        toggleText.textContent = 'HIDE OPTIONS';
     }
 }
 

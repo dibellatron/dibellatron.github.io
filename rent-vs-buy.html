@@ -14,91 +14,173 @@
         
         <div class="calculator-container">
             <div class="input-section">
-                <h2>Home Purchase Details</h2>
+                <h2>Renting</h2>
                 <div class="input-group">
-                    <label for="homePrice">Home Price ($)</label>
-                    <input type="number" id="homePrice" value="400000" min="0" step="1000">
-                </div>
-                
-                <div class="input-group">
-                    <label for="downPayment">Down Payment ($)</label>
-                    <input type="number" id="downPayment" value="80000" min="0" step="1000">
-                </div>
-                
-                <div class="input-group">
-                    <label for="interestRate">Interest Rate (%)</label>
-                    <input type="number" id="interestRate" value="7.0" min="0" max="20" step="0.1">
-                </div>
-                
-                <div class="input-group">
-                    <label for="mortgageTerm">Mortgage Term (years)</label>
-                    <input type="number" id="mortgageTerm" value="30" min="1" max="50">
-                </div>
-                
-                <div class="input-group">
-                    <label for="homeAppreciation">Annual Home Appreciation (%)</label>
-                    <input type="number" id="homeAppreciation" value="3.0" min="0" max="20" step="0.1">
-                </div>
-                
-                <div class="input-group">
-                    <label for="closingCosts">Closing Costs (% of home price)</label>
-                    <input type="number" id="closingCosts" value="3.0" min="0" max="10" step="0.1">
-                    <small>Typical: 2-5% (loan origination, appraisal, inspection, attorney fees, etc.)</small>
-                </div>
-                
-                <h2>Homeownership Costs</h2>
-                <div class="input-group">
-                    <label for="propertyTax">Annual Property Tax ($)</label>
-                    <input type="number" id="propertyTax" value="6000" min="0" step="100">
-                    <small>Typical: 1-2% of home value annually</small>
-                </div>
-                
-                <div class="input-group">
-                    <label for="homeInsurance">Annual Home Insurance ($)</label>
-                    <input type="number" id="homeInsurance" value="1200" min="0" step="50">
-                    <small>Typical: $1,000-2,000 annually</small>
-                </div>
-                
-                <div class="input-group">
-                    <label for="hoaFees">Monthly HOA Fees ($)</label>
-                    <input type="number" id="hoaFees" value="0" min="0" step="25">
-                    <small>Leave as 0 if no HOA</small>
-                </div>
-                
-                <div class="input-group">
-                    <label for="maintenanceRate">Annual Maintenance & Repairs (% of home value)</label>
-                    <input type="number" id="maintenanceRate" value="1.5" min="0" max="5" step="0.1">
-                    <small>Typical: 1-2% of home value annually (NerdWallet recommends 1.5%)</small>
-                </div>
-                
-                <h2>Rental Details</h2>
-                <div class="input-group">
-                    <label for="monthlyRent">Monthly Rent ($)</label>
+                    <label for="monthlyRent">Rent (monthly) ($)</label>
                     <input type="number" id="monthlyRent" value="2500" min="0" step="50">
                 </div>
                 
                 <div class="input-group">
-                    <label for="rentIncrease">Annual Rent Increase (%)</label>
-                    <input type="number" id="rentIncrease" value="3.0" min="0" max="20" step="0.1">
+                    <label for="securityDeposit">Security deposit (months' rent)</label>
+                    <input type="number" id="securityDeposit" value="1" min="0" max="6" step="0.5">
+                </div>
+                
+                <div class="options-toggle">
+                    <button type="button" class="toggle-btn" onclick="toggleOptions('renting-options')">
+                        <span id="renting-toggle-text">SHOW OPTIONS</span>
+                    </button>
+                </div>
+                
+                <div id="renting-options" class="hidden-options">
+                    <div class="input-group">
+                        <label for="rentersInsurance">Renter's insurance (monthly) ($)</label>
+                        <input type="number" id="rentersInsurance" value="15" min="0" step="5">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="brokerFee">Broker fee ($)</label>
+                        <input type="number" id="brokerFee" value="0" min="0" step="100">
+                        <small>One-time fee, often one month's rent</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="rentIncrease">Rent increase (yearly) (%)</label>
+                        <input type="number" id="rentIncrease" value="3.0" min="0" max="20" step="0.1">
+                    </div>
+                </div>
+                
+                <h2>Buying</h2>
+                <div class="input-group">
+                    <label for="homePrice">Purchase price ($)</label>
+                    <input type="number" id="homePrice" value="400000" min="0" step="1000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="downPayment">Down payment ($)</label>
+                    <input type="number" id="downPayment" value="80000" min="0" step="1000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="mortgageTerm">Loan term (years)</label>
+                    <input type="number" id="mortgageTerm" value="30" min="1" max="50">
+                </div>
+                
+                <div class="input-group">
+                    <label for="interestRate">Interest rate (%)</label>
+                    <input type="number" id="interestRate" value="7.0" min="0" max="20" step="0.1">
+                </div>
+                
+                <div class="options-toggle">
+                    <button type="button" class="toggle-btn" onclick="toggleOptions('buying-options')">
+                        <span id="buying-toggle-text">SHOW OPTIONS</span>
+                    </button>
+                </div>
+                
+                <div id="buying-options" class="hidden-options">
+                    <div class="input-group">
+                        <label for="closingCosts">Closing costs (% of purchase price)</label>
+                        <input type="number" id="closingCosts" value="3.0" min="0" max="10" step="0.1">
+                        <small>Loan origination, appraisal, inspection, attorney fees</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="propertyTaxRate">Property tax rate (%)</label>
+                        <input type="number" id="propertyTaxRate" value="1.5" min="0" max="5" step="0.1">
+                        <small>Annual property tax as % of home value</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="homeInsurance">Homeowner's insurance (yearly) ($)</label>
+                        <input type="number" id="homeInsurance" value="1200" min="0" step="50">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="hoaFees">HOA fees (monthly) ($)</label>
+                        <input type="number" id="hoaFees" value="0" min="0" step="25">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="pmi">Private mortgage insurance (PMI) (monthly) ($)</label>
+                        <input type="number" id="pmi" value="0" min="0" step="25">
+                        <small>Required if down payment < 20%</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="additionalUtilities">Additional utility costs (monthly) ($)</label>
+                        <input type="number" id="additionalUtilities" value="100" min="0" step="25">
+                        <small>Extra utilities vs renting (heating/cooling larger space)</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="maintenanceRate">Home repairs and maintenance (yearly) (% of home value)</label>
+                        <input type="number" id="maintenanceRate" value="1.5" min="0" max="5" step="0.1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="sellingCosts">Selling costs (% of home value)</label>
+                        <input type="number" id="sellingCosts" value="6.0" min="0" max="15" step="0.5">
+                        <small>Realtor fees, transfer taxes, etc.</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="homeAppreciation">Home appreciation (yearly) (%)</label>
+                        <input type="number" id="homeAppreciation" value="3.0" min="0" max="20" step="0.1">
+                    </div>
                 </div>
                 
                 <h2>House Hacking Income</h2>
                 <div class="input-group">
-                    <label for="rentalIncome">Monthly Rental Income ($)</label>
+                    <label for="rentalIncome">Monthly rental income ($)</label>
                     <input type="number" id="rentalIncome" value="800" min="0" step="50">
                     <small>Income from renting out a room/basement/ADU</small>
                 </div>
                 
-                <h2>Investment & Opportunity Cost</h2>
-                <div class="input-group">
-                    <label for="investmentReturn">Expected Annual Investment Return (%)</label>
-                    <input type="number" id="investmentReturn" value="7.0" min="0" max="20" step="0.1">
-                    <small>What you could earn by investing instead (e.g. stock market average)</small>
-                </div>
-                
+                <h2>Additional info</h2>
                 <div class="input-group">
                     <label for="timeframe">How many years will you stay?</label>
                     <input type="number" id="timeframe" value="7" min="1" max="30">
+                </div>
+                
+                <div class="input-group">
+                    <label for="investmentReturn">Annual rate of return (%)</label>
+                    <input type="number" id="investmentReturn" value="7.0" min="0" max="20" step="0.1">
+                    <small>What you could earn by investing instead</small>
+                </div>
+                
+                <div class="options-toggle">
+                    <button type="button" class="toggle-btn" onclick="toggleOptions('additional-options')">
+                        <span id="additional-toggle-text">SHOW OPTIONS</span>
+                    </button>
+                </div>
+                
+                <div id="additional-options" class="hidden-options">
+                    <div class="input-group">
+                        <label for="filingStatus">Tax filing status</label>
+                        <select id="filingStatus">
+                            <option value="single">Single</option>
+                            <option value="marriedJoint">Married filing jointly</option>
+                            <option value="marriedSeparate">Married filing separately</option>
+                            <option value="headOfHousehold">Head of household</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="marginalTaxRate">Marginal tax rate (%)</label>
+                        <input type="number" id="marginalTaxRate" value="22" min="0" max="50" step="1">
+                        <small>Your highest tax bracket rate</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="capitalGainsTaxRate">Capital gains tax rate (%)</label>
+                        <input type="number" id="capitalGainsTaxRate" value="15" min="0" max="25" step="1">
+                        <small>Long-term capital gains rate</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="inflationRate">General inflation rate (%)</label>
+                        <input type="number" id="inflationRate" value="2.5" min="0" max="10" step="0.1">
+                        <small>Expected annual inflation</small>
+                    </div>
                 </div>
                 
                 <button onclick="calculateComparison()" class="calculate-btn">Calculate</button>
