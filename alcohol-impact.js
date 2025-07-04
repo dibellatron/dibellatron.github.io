@@ -34,7 +34,7 @@ class AlcoholImpactCalculator {
             recovery: this.calculateRecoveryBenefits(inputs)
         };
 
-        this.displayResults(results);
+        this.displayResults(results, inputs);
     }
 
     /**
@@ -169,55 +169,107 @@ class AlcoholImpactCalculator {
     calculateLiverHealth(inputs) {
         const { drinksPerWeek, yearsOfDrinking } = inputs;
         
-        // Liver damage risk assessment
-        let liverRisk, liverRiskClass;
-        if (drinksPerWeek <= 7) {
-            liverRisk = 'Minimal Risk';
-            liverRiskClass = 'low-risk';
-        } else if (drinksPerWeek <= 14) {
-            liverRisk = 'Low Risk';
-            liverRiskClass = 'low-risk';
-        } else if (drinksPerWeek <= 21) {
-            liverRisk = 'Moderate Risk';
-            liverRiskClass = 'medium-risk';
-        } else if (drinksPerWeek <= 35) {
-            liverRisk = 'High Risk';
-            liverRiskClass = 'high-risk';
-        } else {
-            liverRisk = 'Very High Risk';
-            liverRiskClass = 'high-risk';
+        // Validate inputs
+        if (!drinksPerWeek || !yearsOfDrinking || drinksPerWeek <= 0 || yearsOfDrinking <= 0) {
+            return {
+                overallRisk: 'No Risk',
+                riskClass: 'low-risk',
+                gramsPerDay: '0.0',
+                totalGramsConsumed: 0,
+                enzymeImpact: 'Normal levels (8-40 IU/L)',
+                astAltRatio: '1.0 (normal)',
+                fattyLiverStage: 'No fatty liver',
+                cirrhosisRisk: '0% (no risk)',
+                recoveryTimeline: 'No recovery needed'
+            };
         }
         
-        // Liver recovery time estimate
-        let recoveryTime;
-        if (drinksPerWeek <= 14) {
-            recoveryTime = '1-2 months';
-        } else if (drinksPerWeek <= 21) {
-            recoveryTime = '3-6 months';
-        } else if (drinksPerWeek <= 35) {
-            recoveryTime = '6-12 months';
+        // Calculate daily alcohol consumption in grams (1 drink ≈ 14g alcohol)
+        const gramsPerDay = (drinksPerWeek * 14) / 7;
+        const totalGramsConsumed = gramsPerDay * 365 * yearsOfDrinking;
+        
+        // Liver enzyme impact estimation (AST/ALT ratio)
+        let enzymeImpact, astAltRatio;
+        if (gramsPerDay <= 20) {
+            enzymeImpact = 'Normal to mildly elevated (40-60 IU/L)';
+            astAltRatio = '1.0-1.2 (normal pattern)';
+        } else if (gramsPerDay <= 40) {
+            enzymeImpact = 'Moderately elevated (60-120 IU/L)';
+            astAltRatio = '1.5-2.0 (concerning pattern)';
+        } else if (gramsPerDay <= 80) {
+            enzymeImpact = 'Significantly elevated (120-200 IU/L)';
+            astAltRatio = '2.0-2.5 (alcoholic pattern)';
         } else {
-            recoveryTime = '1-2 years (if reversible)';
+            enzymeImpact = 'Severely elevated (200+ IU/L)';
+            astAltRatio = '2.5-3.0+ (severe alcoholic pattern)';
         }
         
-        // Fatty liver probability
-        let fattyLiverProb;
-        const totalUnits = drinksPerWeek * yearsOfDrinking;
-        if (totalUnits < 500) {
-            fattyLiverProb = 'Low (< 10%)';
-        } else if (totalUnits < 1500) {
-            fattyLiverProb = 'Moderate (10-30%)';
-        } else if (totalUnits < 3000) {
-            fattyLiverProb = 'High (30-60%)';
+        // Fatty liver progression (steatosis)
+        let fattyLiverStage;
+        if (gramsPerDay <= 20) {
+            fattyLiverStage = 'Minimal: <5% liver fat';
+        } else if (gramsPerDay <= 40) {
+            fattyLiverStage = 'Mild: 5-15% liver fat';
+        } else if (gramsPerDay <= 60) {
+            fattyLiverStage = 'Moderate: 15-30% liver fat';
         } else {
-            fattyLiverProb = 'Very High (> 60%)';
+            fattyLiverStage = 'Severe: >30% liver fat';
+        }
+        
+        // Cirrhosis risk calculation
+        let cirrhosisRisk;
+        const highRiskYears = Math.max(0, yearsOfDrinking - 10); // Risk increases after 10 years
+        
+        if (gramsPerDay <= 30) {
+            cirrhosisRisk = '<1% (minimal risk)';
+        } else if (gramsPerDay <= 60) {
+            cirrhosisRisk = '1-5% (low risk)';
+        } else if (gramsPerDay <= 80) {
+            const riskPercent = Math.min(15, 6 + (highRiskYears * 0.5));
+            cirrhosisRisk = `${riskPercent.toFixed(0)}% (moderate risk)`;
+        } else {
+            const riskPercent = Math.min(30, 12 + (highRiskYears * 1.0));
+            cirrhosisRisk = `${riskPercent.toFixed(0)}% (high risk)`;
+        }
+        
+        // Recovery timeline with quantitative markers
+        let recoveryTimeline;
+        if (gramsPerDay <= 30) {
+            recoveryTimeline = '2-4 weeks: Enzymes normalize, inflammation reduces';
+        } else if (gramsPerDay <= 60) {
+            recoveryTimeline = '2-3 months: Fatty liver reverses, enzymes improve';
+        } else if (gramsPerDay <= 80) {
+            recoveryTimeline = '6-12 months: Significant improvement, some scarring may remain';
+        } else {
+            recoveryTimeline = '1-2 years: Partial recovery possible, permanent damage likely';
+        }
+        
+        // Risk classification
+        let overallRisk, riskClass;
+        if (gramsPerDay <= 20) {
+            overallRisk = 'Low Risk';
+            riskClass = 'low-risk';
+        } else if (gramsPerDay <= 40) {
+            overallRisk = 'Moderate Risk';
+            riskClass = 'medium-risk';
+        } else if (gramsPerDay <= 80) {
+            overallRisk = 'High Risk';
+            riskClass = 'high-risk';
+        } else {
+            overallRisk = 'Very High Risk';
+            riskClass = 'high-risk';
         }
         
         return {
-            liverRisk,
-            liverRiskClass,
-            recoveryTime,
-            fattyLiverProb
+            overallRisk,
+            riskClass,
+            gramsPerDay: gramsPerDay.toFixed(1),
+            totalGramsConsumed,
+            enzymeImpact,
+            astAltRatio,
+            fattyLiverStage,
+            cirrhosisRisk,
+            recoveryTimeline
         };
     }
 
@@ -317,7 +369,7 @@ class AlcoholImpactCalculator {
     /**
      * Display all results in the UI
      */
-    displayResults(results) {
+    displayResults(results, inputs) {
         // Longevity Impact
         document.getElementById('yearsLost').textContent = `${results.longevity.yearsLost.toFixed(1)} years`;
         document.getElementById('yearsLost').className = `result-value ${results.longevity.riskClass}`;
@@ -385,6 +437,220 @@ class AlcoholImpactCalculator {
         
         // Show results section
         document.getElementById('results').classList.add('show');
+        
+        // Create charts
+        this.createDamageChart(inputs, results);
+        this.createFinancialChart(inputs, results);
+    }
+
+    /**
+     * Create damage timeline chart
+     */
+    createDamageChart(inputs, results) {
+        const ctx = document.getElementById('damageChart').getContext('2d');
+        
+        // Destroy existing chart if it exists
+        if (window.damageChartInstance) {
+            window.damageChartInstance.destroy();
+        }
+        
+        const { drinksPerWeek, yearsOfDrinking } = inputs;
+        const maxYears = Math.max(20, yearsOfDrinking + 5);
+        
+        // Calculate damage accumulation over time
+        const damageData = [];
+        const recoveryData = [];
+        const currentDamage = results.longevity.yearsLost;
+        
+        for (let year = 0; year <= maxYears; year++) {
+            // Damage accumulates over time (non-linear)
+            const tempInputs = { ...inputs, yearsOfDrinking: year };
+            const tempLongevity = this.calculateLongevityImpact(tempInputs);
+            damageData.push(tempLongevity.yearsLost);
+            
+            // Recovery line (shows benefit of stopping at current year)
+            if (year <= yearsOfDrinking) {
+                recoveryData.push(null);
+            } else {
+                const yearsInRecovery = year - yearsOfDrinking;
+                const recoveryFactor = Math.min(0.5, yearsInRecovery * 0.1); // 50% max recovery over 5 years
+                const recoveredYears = currentDamage * recoveryFactor;
+                recoveryData.push(Math.max(0, currentDamage - recoveredYears));
+            }
+        }
+        
+        const labels = Array.from({length: maxYears + 1}, (_, i) => i);
+        
+        window.damageChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Years of Life Lost (Continuing)',
+                    data: damageData,
+                    borderColor: '#e74c3c',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }, {
+                    label: 'Years Lost (If Stopped Today)',
+                    data: recoveryData,
+                    borderColor: '#27ae60',
+                    backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                    tension: 0.3,
+                    fill: false,
+                    borderDash: [5, 5]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Health Impact Timeline',
+                        font: { size: 16, weight: 'bold' }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Years'
+                        },
+                        grid: {
+                            display: true,
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Years of Life Lost'
+                        },
+                        beginAtZero: true,
+                        grid: {
+                            display: true,
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+    }
+
+    /**
+     * Create financial opportunity cost chart
+     */
+    createFinancialChart(inputs, results) {
+        const ctx = document.getElementById('financialChart').getContext('2d');
+        
+        // Destroy existing chart if it exists
+        if (window.financialChartInstance) {
+            window.financialChartInstance.destroy();
+        }
+        
+        const { drinksPerWeek, yearsOfDrinking, costPerDrink } = inputs;
+        const actualCost = costPerDrink || results.financial.actualCostPerDrink;
+        const annualCost = drinksPerWeek * 52 * actualCost;
+        
+        // Calculate opportunity cost over time (what you're missing out on)
+        const opportunityCostData = [];
+        
+        for (let year = 0; year <= yearsOfDrinking; year++) {
+            // Investment growth (6% annual return, compounded monthly)
+            const monthlyInvestment = annualCost / 12;
+            const months = year * 12;
+            const monthlyRate = 0.06 / 12;
+            
+            let investmentValue = 0;
+            if (year > 0 && monthlyRate > 0) {
+                investmentValue = monthlyInvestment * (((1 + monthlyRate) ** months - 1) / monthlyRate);
+            }
+            
+            // Opportunity cost = what you could have had minus what you spent
+            const totalSpent = annualCost * year;
+            const opportunityCost = investmentValue - totalSpent;
+            opportunityCostData.push(Math.max(0, opportunityCost));
+        }
+        
+        const labels = Array.from({length: yearsOfDrinking + 1}, (_, i) => i);
+        
+        window.financialChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Money You\'re Missing Out On',
+                    data: opportunityCostData,
+                    borderColor: '#f39c12',
+                    backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Opportunity Cost: What You\'re Missing Out On',
+                        font: { size: 16, weight: 'bold' }
+                    },
+                    subtitle: {
+                        display: true,
+                        text: 'This shows how much extra money you could have if you invested your alcohol spending instead',
+                        font: { size: 12 },
+                        color: '#666'
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Years'
+                        },
+                        grid: {
+                            display: true,
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Extra Money You Could Have ($)'
+                        },
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        },
+                        grid: {
+                            display: true,
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
     }
 }
 

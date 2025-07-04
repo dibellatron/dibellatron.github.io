@@ -194,6 +194,16 @@
         .hidden {
             display: none !important;
         }
+        .chart-container {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .chart-container canvas {
+            max-height: 300px;
+        }
     </style>
 </head>
 <body>
@@ -343,6 +353,21 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="result-section collapsible">
+                <div class="section-header" onclick="toggleSection('charts')">
+                    <h3>📊 Visual Timeline</h3>
+                    <span class="toggle-icon" id="charts-icon">▼</span>
+                </div>
+                <div class="section-content" id="charts-content">
+                    <div class="chart-container">
+                        <canvas id="damageChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="chart-container" id="financialChartContainer">
+                        <canvas id="financialChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div class="disclaimer">
@@ -354,6 +379,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <script src="alcohol-impact.js"></script>
 </body>
 </html>
